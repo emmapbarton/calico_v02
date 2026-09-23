@@ -2,8 +2,8 @@
 
 ## Purpose
 
-Build Calico v02 to match the approved desktop mockup exactly while carrying
-forward the selected, proven Calico v01 mechanisms without silently losing
+Build Calico v02 to match the  desktop mockup exactly while carrying
+forward the selected, proven Calico v01 mechanisms without losing
 features or existing user data.
 
 ## Source Of Truth
