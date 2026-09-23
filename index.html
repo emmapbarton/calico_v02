@@ -375,18 +375,21 @@
     #calico-design-package .package[data-panel="day-hours"].is-active,
     #calico-design-package .package[data-panel="day-allocation"].is-active,
     #calico-design-package .package[data-panel="conflict"].is-active,
+    #calico-design-package .package[data-panel="task-detail"].is-active,
     #calico-design-package .package[data-panel="search-feedback"].is-active { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; pointer-events: none; }
     #calico-design-package .package[data-panel="new-item"] .modal-stage,
     #calico-design-package .package[data-panel="reserve"] .modal-stage,
     #calico-design-package .package[data-panel="day-hours"] .modal-stage,
     #calico-design-package .package[data-panel="day-allocation"] .modal-stage,
     #calico-design-package .package[data-panel="conflict"] .modal-stage,
+    #calico-design-package .package[data-panel="task-detail"] .detail-stage,
     #calico-design-package .package[data-panel="search-feedback"] .feedback-stage { width: 100%; min-height: 100%; display: grid; place-items: center; padding: 28px; background: transparent; pointer-events: none; }
     #calico-design-package .package[data-panel="new-item"] .sheet,
     #calico-design-package .package[data-panel="reserve"] .sheet,
     #calico-design-package .package[data-panel="day-hours"] .sheet,
     #calico-design-package .package[data-panel="day-allocation"] .sheet,
     #calico-design-package .package[data-panel="conflict"] .choice-sheet,
+    #calico-design-package .package[data-panel="task-detail"] .detail-shell,
     #calico-design-package .package[data-panel="search-feedback"] .feedback-shell { pointer-events: auto; }
     #calico-design-package .package[data-panel="reserve"] .sheet-foot { justify-content: flex-end; }
     #calico-design-package .package[data-panel="reserve"] .sheet-foot .text { display: none; }
@@ -469,7 +472,7 @@
       };
       const packageButtons = all('[data-package]');
       const packages = all('[data-panel]');
-      const overlayPanels = new Set(['new-item', 'reserve', 'day-hours', 'day-allocation', 'conflict', 'search-feedback']);
+      const overlayPanels = new Set(['new-item', 'reserve', 'day-hours', 'day-allocation', 'conflict', 'task-detail', 'search-feedback']);
       let activeOverlay = null;
       const openPanel = name => {
         const panel = root.querySelector(`[data-panel="${name}"]`);
@@ -517,6 +520,23 @@
         adjust.textContent = 'Adjust hours';
         adjust.addEventListener('click', event => { event.stopPropagation(); openPanel('day-allocation'); });
         block.appendChild(adjust);
+      });
+
+      const openTaskDetail = target => {
+        target.tabIndex = 0;
+        target.setAttribute('role', 'button');
+        target.setAttribute('aria-label', 'Open task details');
+        target.addEventListener('click', () => openPanel('task-detail'));
+        target.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openPanel('task-detail');
+          }
+        });
+      };
+      root.querySelectorAll('.week-grid .block.task-blue, .week-grid .block.task-orange, .day-entry.task-blue, .day-entry.task-orange').forEach(openTaskDetail);
+      root.querySelectorAll('[data-page="agenda"] .agenda-row').forEach(row => {
+        if (!row.textContent.includes('Event')) openTaskDetail(row);
       });
 
       const agendaTask = root.querySelector('[data-page="agenda"] .agenda-row');
