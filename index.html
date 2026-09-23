@@ -343,6 +343,50 @@
     #calico-design-package .search-empty i { width: 25px; height: 25px; margin-bottom: 8px; color: #8e8e93; }
     #calico-design-package .search-empty strong { display: block; color: #3a3a3c; font-size: 13px; }
     #calico-design-package .search-empty span { display: block; margin-top: 3px; font-size: 12px; }
+    /* Standalone desktop shell adjustments agreed after the mockup review. */
+    #calico-design-package .traffic,
+    #calico-design-package .tool-icon[aria-label="Undo last change"],
+    #calico-design-package [data-page-button="empty"],
+    #calico-design-package .page[data-page="empty"] { display: none !important; }
+    #calico-design-package .close svg,
+    #calico-design-package .icon-button svg { width: 17px; height: 17px; display: block; }
+    #calico-design-package .close { flex: 0 0 auto; padding: 0; line-height: 0; }
+    #calico-design-package .period[hidden] { display: none; }
+    #calico-design-package .week-grid { flex: 1; grid-template-rows: 58px minmax(350px, 1fr); }
+    #calico-design-package .page[data-page="week"] .main-page { display: flex; flex-direction: column; }
+    #calico-design-package .time-axis,
+    #calico-design-package .schedule-cell { height: auto; min-height: 350px; }
+    #calico-design-package .agenda,
+    #calico-design-package .settings { width: 100%; max-width: none; }
+    #calico-design-package button.setting { width: 100%; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; }
+    #calico-design-package .settings .setting > .text { min-height: 28px; white-space: nowrap; }
+    #calico-design-package .block.task-blue,
+    #calico-design-package .block.task-orange { padding-bottom: 25px; }
+    #calico-design-package .adjust-block-hours { position: absolute; right: 6px; bottom: 5px; min-height: 17px; border: 0; border-radius: 4px; padding: 2px 5px; background: rgba(255,255,255,.8); color: currentColor; font-size: 9px; line-height: 1.1; }
+    #calico-design-package .agenda-disclosure { width: 18px; height: 18px; display: inline-grid; place-items: center; margin-left: 5px; border: 0; border-radius: 4px; padding: 0; background: transparent; color: #6e6e73; vertical-align: middle; }
+    #calico-design-package .agenda-disclosure svg { width: 14px; height: 14px; }
+    #calico-design-package .agenda-disclosure[aria-expanded="true"] svg { transform: rotate(180deg); }
+    #calico-design-package .outcome-panel { display: none; }
+    #calico-design-package .outcome-panel.is-open { display: block; }
+    #calico-design-package .search-tabs,
+    #calico-design-package .search-state[data-search-state="feedback"] { display: none !important; }
+    #calico-design-package .package[data-panel="reserve"].is-active,
+    #calico-design-package .package[data-panel="day-hours"].is-active,
+    #calico-design-package .package[data-panel="day-allocation"].is-active,
+    #calico-design-package .package[data-panel="conflict"].is-active,
+    #calico-design-package .package[data-panel="search-feedback"].is-active { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    #calico-design-package .package[data-panel="reserve"] .modal-stage,
+    #calico-design-package .package[data-panel="day-hours"] .modal-stage,
+    #calico-design-package .package[data-panel="day-allocation"] .modal-stage,
+    #calico-design-package .package[data-panel="conflict"] .modal-stage,
+    #calico-design-package .package[data-panel="search-feedback"] .feedback-stage { width: 100%; min-height: 100%; display: grid; place-items: center; padding: 28px; background: transparent; pointer-events: none; }
+    #calico-design-package .package[data-panel="reserve"] .sheet,
+    #calico-design-package .package[data-panel="day-hours"] .sheet,
+    #calico-design-package .package[data-panel="day-allocation"] .sheet,
+    #calico-design-package .package[data-panel="conflict"] .choice-sheet,
+    #calico-design-package .package[data-panel="search-feedback"] .feedback-shell { pointer-events: auto; }
+    #calico-design-package .package[data-panel="reserve"] .sheet-foot { justify-content: flex-end; }
+    #calico-design-package .package[data-panel="reserve"] .sheet-foot .text { display: none; }
   </style>
 
   <nav class="package-nav" aria-label="Calico design package">
@@ -422,11 +466,93 @@
       };
       const packageButtons = all('[data-package]');
       const packages = all('[data-panel]');
-      packageButtons.forEach(button => button.addEventListener('click', () => { show(packageButtons, packages, 'package', 'panel', button.dataset.package); if (button.dataset.confirmTarget) root.querySelector(`[data-confirm-tab="${button.dataset.confirmTarget}"]`).click(); }));
-      all('.close').forEach(button => button.addEventListener('click', () => show(packageButtons, packages, 'package', 'panel', 'planner')));
+      const overlayPanels = new Set(['reserve', 'day-hours', 'day-allocation', 'conflict', 'search-feedback']);
+      let activeOverlay = null;
+      const openPanel = name => {
+        const panel = root.querySelector(`[data-panel="${name}"]`);
+        if (!panel) return;
+        if (overlayPanels.has(name)) {
+          panel.classList.add('is-active');
+          activeOverlay = name;
+          return;
+        }
+        activeOverlay = null;
+        show(packageButtons, packages, 'package', 'panel', name);
+      };
+      const closePanel = () => {
+        if (activeOverlay) {
+          root.querySelector(`[data-panel="${activeOverlay}"]`)?.classList.remove('is-active');
+          activeOverlay = null;
+          return;
+        }
+        show(packageButtons, packages, 'package', 'panel', 'planner');
+      };
+      packageButtons.forEach(button => button.addEventListener('click', () => { openPanel(button.dataset.package); if (button.dataset.confirmTarget) root.querySelector(`[data-confirm-tab="${button.dataset.confirmTarget}"]`).click(); }));
+      all('.close, [data-close-overlay]').forEach(button => button.addEventListener('click', closePanel));
       const pageButtons = all('[data-page-button]');
       const pages = all('[data-page]');
-      pageButtons.forEach(button => button.addEventListener('click', () => show(pageButtons, pages, 'pageButton', 'page', button.dataset.pageButton)));
+      const period = root.querySelector('.period');
+      const updatePeriod = page => {
+        const rangePages = new Set(['week', 'agenda', 'review']);
+        if (page === 'day') {
+          period.hidden = false;
+          period.textContent = 'Tuesday, 19 May';
+        } else if (rangePages.has(page)) {
+          period.hidden = false;
+          period.innerHTML = '<b>‹</b>18-22 May<b>›</b>';
+        } else {
+          period.hidden = true;
+        }
+      };
+      pageButtons.forEach(button => button.addEventListener('click', () => { show(pageButtons, pages, 'pageButton', 'page', button.dataset.pageButton); updatePeriod(button.dataset.pageButton); }));
+      updatePeriod('week');
+
+      root.querySelectorAll('.week-grid .block.task-blue, .week-grid .block.task-orange').forEach(block => {
+        const adjust = document.createElement('button');
+        adjust.className = 'adjust-block-hours';
+        adjust.type = 'button';
+        adjust.textContent = 'Adjust hours';
+        adjust.addEventListener('click', event => { event.stopPropagation(); openPanel('day-allocation'); });
+        block.appendChild(adjust);
+      });
+
+      const agendaTask = root.querySelector('[data-page="agenda"] .agenda-row');
+      const agendaOutcome = root.querySelector('[data-page="agenda"] .outcome-panel');
+      if (agendaTask && agendaOutcome) {
+        const title = agendaTask.querySelector('strong');
+        const disclosure = document.createElement('button');
+        disclosure.className = 'agenda-disclosure';
+        disclosure.type = 'button';
+        disclosure.setAttribute('aria-label', 'Expand task update');
+        disclosure.setAttribute('aria-expanded', 'false');
+        disclosure.innerHTML = '<i data-lucide="chevron-down" aria-hidden="true"></i>';
+        disclosure.addEventListener('click', event => {
+          event.stopPropagation();
+          const open = agendaOutcome.classList.toggle('is-open');
+          disclosure.setAttribute('aria-expanded', String(open));
+        });
+        title.appendChild(disclosure);
+      }
+
+      const conflictFooter = root.querySelector('[data-panel="conflict"] .sheet-foot');
+      if (conflictFooter) {
+        const [notNow, save] = conflictFooter.querySelectorAll('button');
+        notNow.dataset.closeOverlay = '';
+        notNow.addEventListener('click', closePanel);
+        save.textContent = 'Save';
+      }
+
+      const resultState = root.querySelector('[data-search-state="results"]');
+      const emptyState = root.querySelector('[data-search-state="empty"]');
+      const syncSearch = value => {
+        const query = value.trim().toLowerCase();
+        const hasMatches = !query || ['launch', 'brief', 'review'].some(term => query.includes(term));
+        resultState.classList.toggle('is-active', hasMatches);
+        emptyState.classList.toggle('is-active', !hasMatches);
+        all('[data-search-state="empty"] input').forEach(input => { input.value = value; });
+        all('[data-search-state="results"] input').forEach(input => { input.value = value; });
+      };
+      all('[data-search-state] input').forEach(input => input.addEventListener('input', () => syncSearch(input.value)));
       const itemButtons = all('[data-item-type]');
       const itemForms = all('[data-item]');
       const itemTitle = root.querySelector('#new-item-title');
