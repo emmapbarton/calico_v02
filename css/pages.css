@@ -12,3 +12,5 @@
     #calico-design-package .empty h2 { margin-bottom: 7px; font-size: 18px; }
     #calico-design-package .empty p { margin-bottom: 16px; color: #6e6e73; font-size: 13px; line-height: 1.4; }
     #calico-design-package .primary { min-height: 32px; border: 0; border-radius: 7px; padding: 6px 12px; background: #007aff; color: #fff; font-size: 13px; font-weight: 550; }
+    #calico-design-package .account-setting .setting-value { color: #22813f; font-weight: 650; }
+    #calico-design-package .sign-out-setting .text { color: #d92d20; }

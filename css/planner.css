@@ -40,3 +40,31 @@
     #calico-design-package .allocation span { margin-right: auto; color: #6e6e73; }
     #calico-design-package .allocation button { min-height: 27px; border: 0; border-radius: 5px; padding: 5px 7px; background: #fff; color: #007aff; font-size: 11px; }
     #calico-design-package .allocation button:first-of-type { background: #007aff; color: #fff; }
+    #calico-design-package .day-label { min-height: 88px; }
+    #calico-design-package .capacity-chip { width: 62px; min-height: 22px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; margin-top: 7px; border: 1px solid #d7d7dc; border-radius: 999px; padding: 2px 6px; background: #fff; color: #6e6e73; font-size: 10px; font-weight: 650; }
+    #calico-design-package .capacity-chip .capacity-dot { width: 8px; height: 8px; border-radius: 50%; background: #8e68d8; }
+    #calico-design-package .capacity-chip[data-capacity="7"] { border-color: #85bcff; background: #edf6ff; color: #0066d6; }
+    #calico-design-package .capacity-chip[data-capacity="7"] .capacity-dot { background: #007aff; }
+    #calico-design-package .capacity-chip[data-capacity="8"] .capacity-dot { background: #e67817; }
+    #calico-design-package .capacity-chip.is-expanded { width: 126px; display: flex; justify-content: space-between; margin: 7px auto 0; padding: 3px 6px; box-shadow: 0 4px 12px rgba(0,122,255,.14); }
+    #calico-design-package .capacity-chip.is-expanded .capacity-value { display: inline-flex; align-items: center; gap: 4px; }
+    #calico-design-package .capacity-chip .capacity-adjust { width: 19px; height: 19px; display: none; place-items: center; border: 0; border-radius: 50%; padding: 0; background: #fff; color: #0066d6; line-height: 0; }
+    #calico-design-package .capacity-chip.is-expanded .capacity-adjust { display: grid; }
+    #calico-design-package .capacity-chip .capacity-adjust svg { width: 11px; height: 11px; }
+    #calico-design-package .day-capacity { min-height: 54px; display: flex; align-items: center; gap: 16px; margin: 17px 0 19px; border: 1px solid #dfe0e5; border-radius: 8px; padding: 10px 13px; background: #fbfbfc; }
+    #calico-design-package .day-capacity-label { display: inline-flex; align-items: center; gap: 6px; min-width: 128px; color: #717277; font-size: 11px; font-weight: 650; text-transform: uppercase; }
+    #calico-design-package .day-capacity-label svg { width: 14px; height: 14px; color: #007aff; }
+    #calico-design-package .day-capacity-value { display: inline-flex; align-items: center; gap: 8px; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .day-capacity-value strong { color: #1d1d1f; font-size: 19px; }
+    #calico-design-package .capacity-stepper { display: inline-flex; align-items: center; gap: 6px; }
+    #calico-design-package .capacity-stepper button { width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid #d9d9de; border-radius: 50%; padding: 0; background: #fff; color: #007aff; line-height: 0; }
+    #calico-design-package .capacity-stepper svg { width: 11px; height: 11px; }
+    #calico-design-package .capacity-levels { display: inline-flex; gap: 4px; margin-left: auto; }
+    #calico-design-package .capacity-levels button { min-width: 59px; min-height: 26px; border: 1px solid #d9d9de; border-radius: 6px; padding: 4px 8px; background: #fff; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .capacity-levels button[aria-pressed="true"] { border-color: #86bbf5; background: #eaf4ff; color: #0066d6; font-weight: 650; }
+    #calico-design-package .task-optional { border: 1px dashed #ad6a10; background: #fff8ee; color: #8b520c; }
+    #calico-design-package .priority-control { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin: 13px 0 3px; }
+    #calico-design-package .priority-control button { min-height: 53px; border: 1px solid #d9d9de; border-radius: 8px; padding: 8px 9px; background: #fff; color: #6e6e73; font-size: 11px; text-align: left; }
+    #calico-design-package .priority-control strong { display: block; margin-bottom: 3px; color: #1d1d1f; font-size: 12px; }
+    #calico-design-package .priority-control button[aria-pressed="true"] { border-color: #85bcff; background: #edf6ff; color: #0066d6; }
+    #calico-design-package .priority-control button[aria-pressed="true"] strong { color: #0066d6; }

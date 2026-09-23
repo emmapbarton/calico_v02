@@ -9,7 +9,7 @@ window.Calico.createNavigation = function createNavigation(root, fixture) {
 
   const packageButtons = all('[data-package]');
   const packages = all('[data-panel]');
-  const overlayPanels = new Set(['new-item', 'reserve', 'day-hours', 'day-allocation', 'conflict', 'task-detail', 'search-feedback']);
+  const overlayPanels = new Set(['new-item', 'task-options', 'event-options', 'reserve', 'day-hours', 'day-allocation', 'conflict', 'task-detail', 'search-feedback']);
   const period = root.querySelector('.package[data-panel="planner"] .period');
   let activeOverlay = null;
 

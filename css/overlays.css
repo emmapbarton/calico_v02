@@ -246,7 +246,7 @@
     #calico-design-package .icon-button svg { width: 17px; height: 17px; display: block; }
     #calico-design-package .close { flex: 0 0 auto; padding: 0; line-height: 0; }
     #calico-design-package .period[hidden] { display: none; }
-    #calico-design-package .week-grid { flex: 1; grid-template-rows: 58px minmax(350px, 1fr); }
+    #calico-design-package .week-grid { flex: 1; grid-template-rows: 88px minmax(350px, 1fr); }
     #calico-design-package .page[data-page="week"] .main-page { display: flex; flex-direction: column; }
     #calico-design-package .time-axis,
     #calico-design-package .schedule-cell { height: auto; min-height: 350px; }
@@ -292,3 +292,55 @@
     #calico-design-package .package[data-panel="new-item"] .sheet-foot { justify-content: flex-end; }
     #calico-design-package .package[data-panel="task-detail"] .sheet-foot { justify-content: flex-end; }
     #calico-design-package .package[data-panel="task-detail"] .sheet-foot .text { display: none; }
+    #calico-design-package .package[data-panel="task-options"].is-active,
+    #calico-design-package .package[data-panel="event-options"].is-active { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    #calico-design-package .package[data-panel="task-options"] .modal-stage,
+    #calico-design-package .package[data-panel="event-options"] .modal-stage { width: 100%; min-height: 100%; display: grid; place-items: center; padding: 28px; background: transparent; pointer-events: none; }
+    #calico-design-package .package[data-panel="task-options"] .options-sheet,
+    #calico-design-package .package[data-panel="event-options"] .options-sheet { pointer-events: auto; }
+    #calico-design-package .runtime-overlay { position: fixed; z-index: 30; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    #calico-design-package .runtime-sheet { width: min(540px, calc(100% - 32px)); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 22px 56px rgba(28,28,36,.18); pointer-events: auto; }
+    #calico-design-package .runtime-sheet .sheet-head { min-height: 60px; padding: 9px 18px; }
+    #calico-design-package .runtime-sheet .sheet-head h1 { font-size: 17px; }
+    #calico-design-package .runtime-sheet .sheet-foot { justify-content: space-between; }
+    #calico-design-package .runtime-sheet .sheet-foot .primary { margin-left: auto; }
+    #calico-design-package .runtime-choice { width: 100%; min-height: 56px; display: grid; grid-template-columns: 22px minmax(0,1fr) 14px; align-items: center; gap: 9px; border: 1px solid #e1e1e5; border-radius: 8px; margin-top: 7px; padding: 8px 10px; background: #fff; color: #1d1d1f; text-align: left; }
+    #calico-design-package .runtime-choice i { width: 16px; height: 16px; color: #007aff; }
+    #calico-design-package .runtime-choice strong { display: block; font-size: 13px; }
+    #calico-design-package .runtime-choice small { display: block; margin-top: 3px; color: #6e6e73; font-size: 11px; line-height: 1.25; }
+    #calico-design-package .runtime-choice b { color: #8e8e93; font-size: 16px; font-weight: 400; }
+    #calico-design-package .choice-body-copy { margin: 0 0 13px; color: #6e6e73; font-size: 13px; line-height: 1.42; }
+    #calico-design-package .runtime-choice.is-set-aside i { color: #9a5b72; }
+    #calico-design-package .runtime-section-label { margin: 13px 0 5px; color: #8e8e93; font-size: 10px; font-weight: 650; text-transform: uppercase; }
+    #calico-design-package .repeat-sheet { width: min(470px, calc(100% - 32px)); }
+    #calico-design-package .repeat-sheet .sheet-body { padding-top: 13px; }
+    #calico-design-package .repeat-field { margin-top: 13px; }
+    #calico-design-package .repeat-field > span { display: block; margin-bottom: 6px; color: #6e6e73; font-size: 11px; font-weight: 650; }
+    #calico-design-package .repeat-segmented { display: grid; grid-template-columns: repeat(3,1fr); overflow: hidden; border: 1px solid #d9d9de; border-radius: 8px; }
+    #calico-design-package .repeat-segmented button { min-height: 31px; border: 0; border-right: 1px solid #d9d9de; background: #fff; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .repeat-segmented button:last-child { border-right: 0; }
+    #calico-design-package .repeat-segmented button[aria-pressed="true"] { background: #eaf4ff; color: #0066d6; font-weight: 650; }
+    #calico-design-package .weekday-picker { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+    #calico-design-package .weekday-picker button { min-height: 29px; border: 1px solid #d9d9de; border-radius: 6px; background: #fff; color: #6e6e73; font-size: 10px; }
+    #calico-design-package .weekday-picker button[aria-pressed="true"] { border-color: #86bbf5; background: #eaf4ff; color: #0066d6; font-weight: 650; }
+    #calico-design-package .repeat-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #calico-design-package .repeat-value { min-height: 35px; display: flex; align-items: center; border-bottom: 1px solid #e5e5ea; color: #3a3a3c; font-size: 12px; }
+    #calico-design-package .repeat-row { min-height: 37px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e5ea; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .placement-sheet { width: min(530px, calc(100% - 32px)); }
+    #calico-design-package .placement-summary { display: flex; align-items: center; justify-content: space-between; margin: 10px 0 2px; border-radius: 8px; padding: 10px 11px; background: #f5f5f7; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .placement-summary strong { color: #1d1d1f; font-size: 13px; }
+    #calico-design-package .slot-day { padding: 10px 0 1px; }
+    #calico-design-package .slot-day + .slot-day { border-top: 1px solid #e5e5ea; }
+    #calico-design-package .slot-date { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    #calico-design-package .slot-date strong { font-size: 12px; }
+    #calico-design-package .slot-date span { color: #6e6e73; font-size: 11px; }
+    #calico-design-package .slot-row { display: grid; grid-template-columns: 104px minmax(0,1fr) auto; align-items: center; gap: 8px; min-height: 32px; font-size: 12px; }
+    #calico-design-package .slot-row > span:last-of-type { color: #6e6e73; font-size: 11px; }
+    #calico-design-package .slot-stepper { display: inline-flex; align-items: center; gap: 8px; }
+    #calico-design-package .slot-stepper button { width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid #d9d9de; border-radius: 50%; padding: 0; background: #fff; color: #007aff; line-height: 0; }
+    #calico-design-package .slot-stepper svg { width: 11px; height: 11px; }
+    #calico-design-package .slot-stepper strong { min-width: 24px; font-size: 12px; text-align: center; }
+    #calico-design-package .show-more-days { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-top: 1px solid #e5e5ea; margin-top: 10px; padding: 11px 0 0; background: transparent; color: #007aff; font-size: 12px; font-weight: 650; }
+    #calico-design-package .show-more-days svg { width: 15px; height: 15px; }
+    #calico-design-package .extra-slot-days { display: none; }
+    #calico-design-package .extra-slot-days.is-open { display: block; }
