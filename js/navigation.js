@@ -1,4 +1,6 @@
-export function createNavigation(root, fixture) {
+window.Calico = window.Calico || {};
+
+window.Calico.createNavigation = function createNavigation(root, fixture) {
   const all = selector => root.querySelectorAll(selector);
   const show = (buttons, panels, buttonData, panelData, value) => {
     buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset[buttonData] === value)));

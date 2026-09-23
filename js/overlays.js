@@ -1,4 +1,6 @@
-export function bindOverlays(root, navigation) {
+window.Calico = window.Calico || {};
+
+window.Calico.bindOverlays = function bindOverlays(root, navigation) {
   root.querySelectorAll('.close, [data-close-overlay]').forEach(button => button.addEventListener('click', navigation.closePanel));
 
   const conflictFooter = root.querySelector('[data-panel="conflict"] .sheet-foot');

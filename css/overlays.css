@@ -256,6 +256,8 @@
     #calico-design-package .settings .setting > .text { min-height: 28px; white-space: nowrap; }
     #calico-design-package .block.task-blue,
     #calico-design-package .block.task-orange { padding-bottom: 25px; }
+    #calico-design-package .day-entry.task-blue,
+    #calico-design-package .day-entry.task-orange { position: relative; padding-bottom: 25px; }
     #calico-design-package .adjust-block-hours { position: absolute; right: 6px; bottom: 5px; min-height: 17px; border: 0; border-radius: 4px; padding: 2px 5px; background: rgba(255,255,255,.8); color: currentColor; font-size: 9px; line-height: 1.1; }
     #calico-design-package .agenda-disclosure { width: 18px; height: 18px; display: inline-grid; place-items: center; margin-left: 5px; border: 0; border-radius: 4px; padding: 0; background: transparent; color: #6e6e73; vertical-align: middle; }
     #calico-design-package .agenda-disclosure svg { width: 14px; height: 14px; }
@@ -287,5 +289,6 @@
     #calico-design-package .package[data-panel="search-feedback"] .feedback-shell { pointer-events: auto; }
     #calico-design-package .package[data-panel="reserve"] .sheet-foot { justify-content: flex-end; }
     #calico-design-package .package[data-panel="reserve"] .sheet-foot .text { display: none; }
+    #calico-design-package .package[data-panel="new-item"] .sheet-foot { justify-content: flex-end; }
     #calico-design-package .package[data-panel="task-detail"] .sheet-foot { justify-content: flex-end; }
     #calico-design-package .package[data-panel="task-detail"] .sheet-foot .text { display: none; }

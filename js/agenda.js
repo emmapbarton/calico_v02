@@ -1,5 +1,7 @@
-export function bindAgenda(root, navigation) {
-  root.querySelectorAll('.week-grid .block.task-blue, .week-grid .block.task-orange').forEach(block => {
+window.Calico = window.Calico || {};
+
+window.Calico.bindAgenda = function bindAgenda(root, navigation) {
+  root.querySelectorAll('.week-grid .block.task-blue, .week-grid .block.task-orange, .day-entry.task-blue, .day-entry.task-orange').forEach(block => {
     const adjust = document.createElement('button');
     adjust.className = 'adjust-block-hours';
     adjust.type = 'button';

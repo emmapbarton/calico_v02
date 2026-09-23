@@ -1,4 +1,6 @@
-export function bindSearch(root, fixture) {
+window.Calico = window.Calico || {};
+
+window.Calico.bindSearch = function bindSearch(root, fixture) {
   const resultState = root.querySelector('[data-search-state="results"]');
   const emptyState = root.querySelector('[data-search-state="empty"]');
   const inputs = root.querySelectorAll('[data-search-state] input');
