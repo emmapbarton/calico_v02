@@ -1,0 +1,42 @@
+    #calico-design-package .week-grid { display: grid; grid-template-columns: 50px repeat(5,minmax(92px,1fr)); border-top: 1px solid #e5e5ea; border-left: 1px solid #e5e5ea; }
+    #calico-design-package .week-grid > div { border-right: 1px solid #e5e5ea; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .day-label { min-height: 58px; padding: 9px 6px; color: #6e6e73; text-align: center; font-size: 11px; }
+    #calico-design-package .day-label strong { display: block; margin-top: 4px; color: #1d1d1f; font-size: 15px; }
+    #calico-design-package .day-label.today strong { width: 23px; height: 23px; display: grid; place-items: center; margin: 3px auto 0; border-radius: 50%; background: #007aff; color: #fff; font-size: 13px; }
+    #calico-design-package .time-axis { height: 350px; padding: 8px 6px; background: #fcfcfd; color: #8e8e93; text-align: right; font-size: 10px; line-height: 57px; }
+    #calico-design-package .schedule-cell { height: 350px; position: relative; background-image: linear-gradient(to bottom, transparent 56px, #f1f1f3 57px); background-size: 100% 57px; }
+    #calico-design-package .block { position: absolute; right: 5px; left: 5px; overflow: hidden; padding: 7px 8px; border-radius: 6px; font-size: 11px; line-height: 1.23; }
+    #calico-design-package .block strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+    #calico-design-package .block small { display: block; overflow: hidden; margin-top: 2px; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+    #calico-design-package .task-blue { background: #dceeff; color: #075296; }
+    #calico-design-package .task-orange { background: #ffebd8; color: #8b480d; }
+    #calico-design-package .event { border: 1px solid #8e68d8; border-radius: 6px; background: #f2edff; color: #543e8c; }
+    #calico-design-package .availability { background: repeating-linear-gradient(135deg,#f5f5f7 0,#f5f5f7 5px,#e5e5ea 5px,#e5e5ea 7px); color: #59595d; }
+    #calico-design-package .availability small { display: none; }
+    #calico-design-package .day-layout { display: grid; grid-template-columns: minmax(0,1fr) 180px; gap: 22px; }
+    #calico-design-package .day-list { border-top: 1px solid #e5e5ea; }
+    #calico-design-package .day-row { display: grid; grid-template-columns: 58px minmax(0,1fr); min-height: 73px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .day-row time { padding-top: 10px; color: #8e8e93; font-size: 11px; }
+    #calico-design-package .day-entry { margin: 7px 0; padding: 9px; border-radius: 6px; font-size: 13px; }
+    #calico-design-package .day-entry strong { display: block; }
+    #calico-design-package .day-entry small { display: block; margin-top: 3px; font-size: 11px; opacity: .8; }
+    #calico-design-package .day-aside { padding-left: 18px; border-left: 1px solid #e5e5ea; }
+    #calico-design-package .day-aside h2 { margin-bottom: 9px; color: #6e6e73; font-size: 11px; text-transform: uppercase; }
+    #calico-design-package .summary { padding: 12px; border-radius: 7px; background: #f5f5f7; font-size: 12px; line-height: 1.5; }
+    #calico-design-package .summary strong { display: block; font-size: 13px; }
+    #calico-design-package .agenda { max-width: 760px; border-top: 1px solid #e5e5ea; }
+    #calico-design-package .agenda-label { padding: 15px 0 5px; color: #6e6e73; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    #calico-design-package .agenda-row { display: grid; grid-template-columns: 18px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 12px 2px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .check { width: 17px; height: 17px; border: 1.5px solid #aeaeb2; border-radius: 50%; }
+    #calico-design-package .agenda-row strong { display: block; font-size: 14px; font-weight: 550; }
+    #calico-design-package .agenda-row p { margin: 3px 0 0; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .agenda-row time { color: #6e6e73; font-size: 11px; }
+    #calico-design-package .progress-popover { margin: -1px 0 10px 27px; padding: 10px 12px 11px; border-left: 2px solid #007aff; background: #f7f7f9; }
+    #calico-design-package .progress-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid #e1e1e5; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .progress-head button { min-height: 28px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #d2d2d7; border-radius: 6px; padding: 5px 7px; background: #fff; color: #1d1d1f; font-size: 12px; }
+    #calico-design-package .progress-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 9px; color: #515157; font-size: 12px; }
+    #calico-design-package .stepper { color: #007aff; font-weight: 600; }
+    #calico-design-package .allocation { display: flex; align-items: center; gap: 7px; padding-top: 9px; font-size: 12px; }
+    #calico-design-package .allocation span { margin-right: auto; color: #6e6e73; }
+    #calico-design-package .allocation button { min-height: 27px; border: 0; border-radius: 5px; padding: 5px 7px; background: #fff; color: #007aff; font-size: 11px; }
+    #calico-design-package .allocation button:first-of-type { background: #007aff; color: #fff; }
