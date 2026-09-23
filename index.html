@@ -370,16 +370,19 @@
     #calico-design-package .outcome-panel.is-open { display: block; }
     #calico-design-package .search-tabs,
     #calico-design-package .search-state[data-search-state="feedback"] { display: none !important; }
+    #calico-design-package .package[data-panel="new-item"].is-active,
     #calico-design-package .package[data-panel="reserve"].is-active,
     #calico-design-package .package[data-panel="day-hours"].is-active,
     #calico-design-package .package[data-panel="day-allocation"].is-active,
     #calico-design-package .package[data-panel="conflict"].is-active,
     #calico-design-package .package[data-panel="search-feedback"].is-active { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    #calico-design-package .package[data-panel="new-item"] .modal-stage,
     #calico-design-package .package[data-panel="reserve"] .modal-stage,
     #calico-design-package .package[data-panel="day-hours"] .modal-stage,
     #calico-design-package .package[data-panel="day-allocation"] .modal-stage,
     #calico-design-package .package[data-panel="conflict"] .modal-stage,
     #calico-design-package .package[data-panel="search-feedback"] .feedback-stage { width: 100%; min-height: 100%; display: grid; place-items: center; padding: 28px; background: transparent; pointer-events: none; }
+    #calico-design-package .package[data-panel="new-item"] .sheet,
     #calico-design-package .package[data-panel="reserve"] .sheet,
     #calico-design-package .package[data-panel="day-hours"] .sheet,
     #calico-design-package .package[data-panel="day-allocation"] .sheet,
@@ -466,7 +469,7 @@
       };
       const packageButtons = all('[data-package]');
       const packages = all('[data-panel]');
-      const overlayPanels = new Set(['reserve', 'day-hours', 'day-allocation', 'conflict', 'search-feedback']);
+      const overlayPanels = new Set(['new-item', 'reserve', 'day-hours', 'day-allocation', 'conflict', 'search-feedback']);
       let activeOverlay = null;
       const openPanel = name => {
         const panel = root.querySelector(`[data-panel="${name}"]`);
