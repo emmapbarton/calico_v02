@@ -858,38 +858,339 @@ audit in v01.
 
 ### Material Coverage Gaps To Carry Into v02 Planning
 
-- No live Supabase/email/multi-device conflict integration test.
-- No E2E drag/drop, keyboard-shortcut, undo, project CRUD, task recurrence,
-  every conflict choice, or task-time collision journey.
-- No visual-regression/pixel snapshot tests against the approved v02 mockups.
-- No formal accessibility, focus-trap, screen-reader, performance profile, or
-  browser support test.
-- The alpha suite is extremely strong for pure state/engine logic but uses DOM
-  stubs; it cannot prove overlay placement, interaction ergonomics, or CSS.
+#### G1. No Live Supabase, Email, or Multi-Device Integration Test
+
+The existing account E2E test supplies a JavaScript imitation of Supabase. It
+proves that the browser *asks* for a magic link, calls the intended RPC names,
+and omits account metadata from the outgoing JSON. It does **not** prove that
+Supabase Auth sends or accepts a magic link, that the SQL functions work under
+real Row Level Security, or that a deployed browser receives a usable session
+after returning from email.
+
+It also cannot prove the most important multi-device scenario. In v01 this is:
+
+1. Device A and Device B both restore revision 7 of the same schedule.
+2. Device A changes a task and saves revision 8.
+3. Device B changes something from its stale revision 7.
+4. The server returns no updated row to Device B.
+5. Device B keeps its local state, records a sync error, and stops automatic
+   sync rather than overwriting A's revision 8.
+
+There is similarly no test of the account-choice branch when a signed-in device
+already has local planning data and the account also has a schedule. v01 uses a
+browser confirm for that choice; the application must not accidentally upload
+the local copy before the person has chosen.
+
+**v02 requirement when hosting/auth is linked:** use a non-production Supabase
+project or isolated test accounts; exercise a real magic-link callback (or
+Supabase-supported test equivalent), RLS isolation between two users, first
+upload, remote restore, local-versus-remote choice, stale revision, network
+failure, sign-out, and account payload privacy. This is not a reason to weaken
+the local-first rule while auth is deferred; it is a required test slice once
+auth is ported.
+
+#### G2. Important Interactions Lack Browser-Level Tests
+
+The alpha suite proves most underlying state transitions, but the following
+user journeys are not driven through real browser controls:
+
+- **Drag/drop:** source and target dates, visual fragments around events,
+  rejected targets, recurrence-restricted targets, and a resulting constraint
+  warning. The alpha test calls the same state logic but does not prove that a
+  person can successfully pick up and drop the actual v02 block.
+- **Keyboard controls:** `N`, `E`, `T`, `Escape`, and `Cmd/Ctrl+Z`, including
+  the requirement that shortcuts do nothing while typing in a form field.
+- **Undo:** the browser's label, enabled state, the ten-item limit, and the
+  fact that undo rerenders the same schedule a prior action produced.
+- **Project CRUD:** add, rename, recolour, delete, unassign tasks on delete,
+  filter/hide a project, and prove that filtering has no scheduling side
+  effect.
+- **Repeated tasks:** form configuration for each repeat rule, date/count end,
+  generated occurrences, editing a recurrence, and isolation of an override on
+  one occurrence.
+- **Conflict choices:** v01 has seven materially different resolution paths.
+  The current E2E only proves a conflict appears; it does not prove each choice
+  has the stated outcome or that an invalid proposal leaves state unchanged.
+- **Timed-block collision:** preferred time yielding to an event, fixed time
+  rejection against an event or fixed task, return to flexible timing, and
+  timeline rendering around the resulting blocks.
+
+**v02 requirement:** do not build one giant test later. Add the E2E journey in
+the same slice that ports its mechanism. For example, the task-time slice gets
+fixed/preferred/collision tests; the manual-allocation slice gets drag/skip/
+adjust/return-to-auto tests. The matching alpha engine tests remain the faster
+regression layer underneath.
+
+#### G3. No Automated Visual-Regression Baseline
+
+The approved v02 shell was manually visually QA'd, which is the correct first
+gate and is sufficient for Step 1. v01 has no screenshot/pixel comparison that
+would notice an unintended change to desktop geometry, spacing, typography,
+block treatment, modal positioning, or the subtle distinction between task and
+event borders.
+
+**v02 requirement:** once a ported surface is stable, capture deterministic
+desktop screenshots at the agreed reference viewport using fixed fixture data,
+fixed date/time, and a stable font/runtime. Compare Week, Today, Agenda,
+Review, Settings, task detail, New task, Reserve time, Working hours, task
+hours, and conflict/review overlays to approved baseline images. Dynamic text,
+timestamps, or remote status must be fixed or masked deliberately; they must
+not create noisy snapshots. Screenshot failure should trigger visual review,
+not automatic acceptance of an approximate replacement.
+
+This test category verifies visual output, not scheduling correctness. It must
+sit alongside, rather than replace, the engine and interaction tests.
+
+#### G4. Accessibility, Performance, and Browser Support Are Unproven
+
+v01 has some accessible labels and role-based E2E selectors, but it does not
+prove a complete accessible application. In particular, its modal overlays do
+not have tested focus trapping, focus restoration to the invoking control,
+semantic announcements for conflicts/toasts, or fully keyboard-operable drag/
+drop alternatives. Its colour states have not been contrast audited. Mobile
+exists in v01 but is not the current v02 design priority.
+
+There is also no measured scheduling performance budget. The alpha stress test
+shows that 150 tasks and 50 repeating events remain finite and deterministic;
+it does not measure browser render time, input latency, memory, or sync timing.
+Nor is there a browser compatibility matrix.
+
+**v02 requirement:** before a public release, run automated accessibility
+checks plus manual keyboard and screen-reader passes; define a keyboard path
+for every task action and drag equivalent; establish supported browser versions
+and test them; and measure a representative large schedule in a real browser.
+These are release-quality gates, not a request to add mobile polish before the
+desktop design is ready.
+
+#### G5. The Alpha Suite Cannot Test the DOM Contract
+
+The alpha tests execute `app.js` in a VM with minimal interaction stubs. That
+is why they are so valuable for pure logic: they are fast, deterministic, and
+not vulnerable to layout timing. The cost is that they cannot prove:
+
+- a DOM selector exists and is connected to the correct handler;
+- an overlay preserves the background view rather than blanking it;
+- focus, click targets, and event propagation work as intended;
+- controls fit, align, and remain readable at the desktop viewport;
+- the week grid, time geometry, border treatment, overflow, or z-index is
+  correct; or
+- a CSS change has not made a core task interaction unreachable.
+
+**v02 requirement:** preserve the alpha-like unit/engine layer for invariants,
+then add browser interaction tests and visual snapshots for the DOM contract.
+Treat a passing alpha suite as evidence that the calculation is sound, never as
+evidence that the product surface is complete.
 
 ## 18. Porting-Critical Invariants for the Step 3 Matrix
 
 These are not parity decisions. They are v01 behaviours the matrix must
 explicitly preserve, defer, migrate, or intentionally retire.
 
-1. `allocateSchedule()` is the only allocator; all surfaces consume one plan.
-2. Local persistence happens before cloud persistence; a cloud failure never
-   discards local work.
-3. Every repeated occurrence has its own manual override key.
-4. Manual instruction wins over automatic allocation, even if it makes the
-   schedule impossible; the impossibility is surfaced as a shortfall.
-5. A skipped day is an exclusion, not deletion of task demand.
-6. Past incomplete work carries forward exactly once; current/future unchecked
-   state does not create new demand.
-7. A fixed time is stronger than a preferred time; events/availability are
-   stronger than preferred time.
-8. Capacity comes from working window, daily/weekday settings, intensity, then
-   event/availability subtraction, in that order.
-9. Project filtering is presentational and must never change canonical demand
-   or allocation.
-10. Export/account-sync payloads must omit device/session account metadata and
-    retired credentials.
-11. Optimistic account revision mismatch must stop syncing rather than
-    overwriting a newer remote schedule.
-12. Validation and normalisation are part of the product mechanism, not merely
-    input cosmetics.
+### I1. One Canonical Allocation Result
+
+`allocateSchedule()` is v01's single allocator. It consumes state and returns
+the entire plan: task/occurrence allocations, capacity, used/free hours,
+events, and conflict summaries. Week, Today, Agenda, Review, conflict
+simulation, drag/drop, and timeline geometry are all views of that result.
+
+**Why this matters:** if v02 gives each screen a small local allocator, screens
+can disagree about which hours are planned, a manual edit in Today can be lost
+in Week, and conflicts can be reported against a different schedule from the
+one rendered. This is a classic source of patches-over-patches.
+
+**Step 3 implication:** every v01 scheduling feature must map either to inputs
+of the v02 canonical allocator, fields of its plan output, or a presentation
+that only reads that plan. A visual component may never silently manufacture
+its own allocation.
+
+### I2. Local-First Is a Data-Safety Rule
+
+The successful local mutation is the source of immediate user feedback. It is
+written to local storage before cloud work is queued. Sync is an additional
+durability layer, not permission for the UI to show a change. A network,
+authentication, RPC, or conflict error leaves local planning data present and
+readable.
+
+**Why this matters:** replacing this with “wait for server, then update the
+calendar” would make Calico unusable offline and risks data appearing to vanish
+when a request fails. Replacing it with uncontrolled background retries risks
+overwriting another device.
+
+**Step 3 implication:** any v02 persistence abstraction must define a local
+commit path and a distinct sync-status/error path. The mapping row for every
+stateful feature should name whether its change is local-only today, syncable
+later, or already sent through the revisioned account adapter.
+
+### I3. Overrides Belong to a Repeated Occurrence, Not the Task Template
+
+A repeated task is a template. Its actual instances receive ids such as
+`taskId|occ|2026-09-23`. Manual pins, skipped dates, and time blocks live under
+that occurrence id. A single one-off task uses its task id as its occurrence
+id.
+
+**Why this matters:** putting an override on `taskId` would make “move this
+Tuesday's school-planning block” also move, skip, or time-lock future Tuesdays.
+That is wrong both mechanically and psychologically: the person acted on one
+instance, not on the rule that generates every instance.
+
+**Step 3 implication:** recurrence data can be reused/migrated only if v02
+retains occurrence identity. The v01-v02 matrix must mark each manual-control
+feature as occurrence-scoped and include an acceptance test that an override
+does not bleed into the next repeat.
+
+### I4. An Explicit Human Instruction Wins, Even When It Causes a Problem
+
+Pins, exclusions, fixed day amounts, fixed times, and accepted overwork are
+intentional instructions. The engine keeps them. If that makes the remaining
+demand impossible before the deadline, it reports a shortfall; it does not
+quietly undo the instruction or relocate a fixed block.
+
+**Why this matters:** silently “repairing” a calendar may look neat but breaks
+trust. The person cannot reason about a schedule that changes an instruction
+behind their back. The correct response is a focused conflict/resolution state.
+
+**Step 3 implication:** v02 needs an explicit distinction between automatic
+work and user-controlled work in both data and UI. The mapping matrix must
+record what shortfall/review surface appears for impossible constraints, not
+only how a user creates the constraint.
+
+### I5. Skip Removes a Date From This Occurrence; It Does Not Erase Work
+
+Skip sets `excludedDates` for the occurrence/date, equivalent to a zero-hour
+manual allocation. It prevents automatic scheduling there. The task's expected
+demand remains; the allocator attempts later eligible dates. If none exist,
+the plan exposes a shortfall. Completing a task and skipping a block are thus
+not the same operation.
+
+**Why this matters:** treating Skip as task deletion loses unmet work; treating
+it as completed corrupts completion history. Repeated skip must not repeatedly
+add demand either, because the demand was never removed.
+
+**Step 3 implication:** Calico v02's requested “Skipped” outcome should render
+the block greyed out/removed while retaining recoverable data, but its scheduler
+semantics must be this exclusion model. Reversal means remove the exclusion,
+not recreate the task from scratch.
+
+### I6. Carry Forward Only Real, Past, Unfinished Work, Once
+
+For a past logged date, the engine adds `scheduled - completed` to future
+demand. A current or future task whose checkbox is toggled off has no missed
+history yet, so v01 deletes/neutralises its log rather than adding demand. The
+date/task log makes this calculation idempotent across rerenders and reloads.
+
+**Why this matters:** without this distinction, a person checking and
+unchecking today’s block can double the required work. Without idempotency,
+opening the application repeatedly after an incomplete day compounds a single
+miss into several future hours.
+
+**Step 3 implication:** the v02 mapping row for Completed, Partially completed,
+Incomplete, and Skipped must distinguish progress log data from manual
+schedule constraints. Test partial carry-forward, a current-day toggle, and a
+repeated task occurrence separately.
+
+### I7. Time Constraints Have a Deliberate Strength Order
+
+The order is: event/availability occupied time; a valid fixed task time;
+preferred task time when no stronger block occupies it; then flexible automatic
+placement. A fixed time reserves an exact interval and triggers collision
+validation. Preferred time is a request, not a promise: it yields to a fixed
+calendar commitment and can become flexible without being an error.
+
+**Why this matters:** using one generic “pinned to time” flag makes it
+impossible to respect calendar commitments while offering a flexible
+preference. It also makes the user-facing wording lie about whether Calico may
+move the block.
+
+**Step 3 implication:** retain separate `preferred` and `fixed` values, their
+different validation rules, and visibly distinguish their outcomes. Do not map
+both to one v02 control simply because their data shape looks similar.
+
+### I8. Capacity Is Calculated in a Specific Order
+
+For a date, v01 chooses the daily working window (date override before default),
+chooses maximum task capacity (date override before weekday/default), caps that
+maximum by window duration, scales by `intensity / baseline`, caps at 24, then
+subtracts event and availability durations. Task allocation consumes the
+result. Task-scoped accepted overwork is a later exception for that particular
+occurrence, not a change to the shared capacity number.
+
+**Why this matters:** changing the order changes the amount schedulable. For
+example, subtracting events before intensity scales commitments as though less
+of the meeting existed; treating overwork as daily capacity could let unrelated
+tasks take it.
+
+**Step 3 implication:** capacity should be represented as a testable service
+with these inputs and intermediary outputs. The matrix needs separate rows for
+baseline intensity, daily intensity, default/weekday/day working hours, events,
+availability, and task-scoped overwork, while preserving this order in the
+acceptance criteria.
+
+### I9. Project Filtering Cannot Change the Plan
+
+Projects are organisational metadata. Hiding Personal or a project only hides
+its rendered tasks from a surface. Those tasks continue to consume capacity,
+affect conflicts, and appear again when the filter is restored. Deleting a
+project unassigns its tasks; it does not delete or reschedule them.
+
+**Why this matters:** if filtering removed demand before scheduling, the plan
+would change depending on which chips are selected. A user could unknowingly
+create capacity simply by hiding a project, and unhide it into an impossible
+week.
+
+**Step 3 implication:** keep filters outside the plan cache key/canonical
+scheduler input. The v02 mapping must separately describe data management,
+visibility filtering, and project deletion behaviour.
+
+### I10. Portable and Syncable State Must Exclude Device Credentials/Metadata
+
+Backup and Supabase payloads include planning state, not account state. The
+local `account` object has a revision, sync timing/error, and email for the
+current browser. It would be misleading and potentially unsafe to restore that
+onto another browser. Version 6 additionally strips a retired `cloud` adapter,
+including any legacy token.
+
+**Why this matters:** importing a backup must not impersonate a session, force a
+stale revision, leak an email/token, or make a second device believe it has
+already completed a sync. It also prevents old storage data from reviving a
+retired credential path.
+
+**Step 3 implication:** state schemas should make the boundary explicit:
+`planningState` is portable/syncable; `deviceAccountMetadata` is local only.
+The mapping matrix must include a migration and tests for both export and
+account payload filtering.
+
+### I11. Revision Mismatch Must Stop, Not Guess
+
+The Supabase save RPC takes an expected revision. It updates the single row only
+when that revision matches. No returned row means another device wrote first.
+v01 records a local error and pauses sync. It does not pick the newest timestamp,
+merge fields, or overwrite the remote copy automatically.
+
+**Why this matters:** a last-write-wins retry would silently discard a real edit
+on another device. An automatic merge is also unsafe without an explicit model
+for merging schedules, task logs, repeated overrides, and deletes.
+
+**Step 3 implication:** v02 may improve the conflict-resolution experience in a
+later slice, but it cannot replace “stop safely” with silent overwrite. Until a
+designed merge surface and tested merge rules exist, stalled sync is the correct
+behaviour.
+
+### I12. Validation and Normalisation Are Core Behaviour
+
+There are two complementary layers. Form validation stops impossible inputs at
+the point of entry: empty name, task below 0.5h, event end before start, reversed
+working window, too-large fixed amount, or an invalid fixed-time collision.
+Normalisation protects every other ingress: old local storage, an imported JSON
+file, a Supabase row, or a future migration. It clamps values, removes malformed
+dates/time blocks, repairs project links, and deletes retired credentials before
+the scheduler reads state.
+
+**Why this matters:** form validation alone assumes all data was created through
+the current UI. That is false as soon as there are old versions, backups,
+account sync, or developer tools. Normalisation alone is not enough either,
+because it turns a person’s bad input into a confusing later repair rather than
+giving immediate feedback.
+
+**Step 3 implication:** each mapped feature needs both an entry validation rule
+and a normalisation/migration rule. Reusing a v01 data field without carrying
+its validation semantics is not feature parity.
