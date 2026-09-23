@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calico</title>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    html, body { min-height: 100%; margin: 0; background: #f5f5f7; }
+    body { min-width: 1100px; }
+  </style>
+</head>
+<body>
+<div id="calico-design-package">
+  <style>
+    #calico-design-package { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; color: #1d1d1f; letter-spacing: 0; }
+    #calico-design-package * { box-sizing: border-box; }
+    #calico-design-package button, #calico-design-package input { font: inherit; letter-spacing: 0; }
+    #calico-design-package button { cursor: pointer; }
+    #calico-design-package .package-nav { display: none; }
+    #calico-design-package .package-nav span { margin-right: 4px; color: #6e6e73; font-size: 13px; }
+    #calico-design-package .package-nav button { min-height: 32px; border: 1px solid #d2d2d7; border-radius: 7px; padding: 6px 10px; background: #fff; color: #3a3a3c; font-size: 13px; }
+    #calico-design-package .package-nav button[aria-pressed="true"] { border-color: #007aff; background: #007aff; color: #fff; }
+    #calico-design-package .package, #calico-design-package .page, #calico-design-package .item-form, #calico-design-package .account-state, #calico-design-package .welcome-state, #calico-design-package .setup-step { display: none; }
+    #calico-design-package .package.is-active, #calico-design-package .page.is-active, #calico-design-package .item-form.is-active, #calico-design-package .account-state.is-active, #calico-design-package .welcome-state.is-active, #calico-design-package .setup-step.is-active { display: block; }
+    #calico-design-package .app { min-height: 100vh; overflow: hidden; border: 1px solid #d1d1d6; border-radius: 11px; background: #fff; box-shadow: 0 18px 46px rgba(28,28,36,.13); }
+    #calico-design-package .toolbar { height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 14px; border-bottom: 1px solid rgba(60,60,67,.14); background: rgba(250,250,252,.94); }
+    #calico-design-package .traffic { display: flex; gap: 7px; }
+    #calico-design-package .traffic b { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57; }
+    #calico-design-package .traffic b:nth-child(2) { background: #febc2e; } #calico-design-package .traffic b:nth-child(3) { background: #28c840; }
+    #calico-design-package .brand { margin-right: auto; font-size: 14px; font-weight: 650; }
+    #calico-design-package .period { min-height: 28px; display: inline-flex; align-items: center; gap: 10px; padding: 0 7px; border-radius: 6px; background: #f2f2f7; color: #3a3a3c; font-size: 12px; }
+    #calico-design-package .period b { color: #8e8e93; font-size: 16px; line-height: 1; }
+    #calico-design-package .icon-button { width: 30px; height: 30px; display: grid; place-items: center; border: 0; border-radius: 50%; background: #007aff; color: #fff; }
+    #calico-design-package .icon-button i { width: 17px; height: 17px; }
+    #calico-design-package .shell { display: grid; grid-template-columns: 184px minmax(0,1fr); min-height: calc(100vh - 48px); }
+    #calico-design-package .sidebar { padding: 14px 10px; border-right: 1px solid rgba(60,60,67,.10); background: #f6f6f8; }
+    #calico-design-package .sidebar-label { margin: 5px 9px 6px; color: #8e8e93; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    #calico-design-package .sidebar nav { display: grid; gap: 2px; margin-bottom: 19px; }
+    #calico-design-package .sidebar button { min-height: 31px; display: flex; align-items: center; gap: 9px; border: 0; border-radius: 6px; padding: 6px 9px; background: transparent; color: #3a3a3c; text-align: left; font-size: 13px; }
+    #calico-design-package .sidebar button[aria-pressed="true"] { background: #d9eaff; color: #005ecb; font-weight: 600; }
+    #calico-design-package .sidebar i { width: 15px; height: 15px; }
+    #calico-design-package .dot { width: 8px; height: 8px; display: inline-block; border-radius: 50%; }
+    #calico-design-package .content { min-width: 0; background: #fff; }
+    #calico-design-package .main-page { min-height: calc(100vh - 48px); padding: 25px 24px; }
+    #calico-design-package .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 21px; }
+    #calico-design-package h1, #calico-design-package h2, #calico-design-package p { margin-top: 0; }
+    #calico-design-package .page-head h1 { margin-bottom: 4px; font-size: 25px; line-height: 1.16; }
+    #calico-design-package .page-head p { margin-bottom: 0; color: #6e6e73; font-size: 13px; }
+    #calico-design-package .secondary { min-height: 30px; border: 0; border-radius: 7px; padding: 5px 10px; background: #eaf4ff; color: #007aff; font-size: 13px; }
+    #calico-design-package .week-grid { display: grid; grid-template-columns: 50px repeat(5,minmax(92px,1fr)); border-top: 1px solid #e5e5ea; border-left: 1px solid #e5e5ea; }
+    #calico-design-package .week-grid > div { border-right: 1px solid #e5e5ea; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .day-label { min-height: 58px; padding: 9px 6px; color: #6e6e73; text-align: center; font-size: 11px; }
+    #calico-design-package .day-label strong { display: block; margin-top: 4px; color: #1d1d1f; font-size: 15px; }
+    #calico-design-package .day-label.today strong { width: 23px; height: 23px; display: grid; place-items: center; margin: 3px auto 0; border-radius: 50%; background: #007aff; color: #fff; font-size: 13px; }
+    #calico-design-package .time-axis { height: 350px; padding: 8px 6px; background: #fcfcfd; color: #8e8e93; text-align: right; font-size: 10px; line-height: 57px; }
+    #calico-design-package .schedule-cell { height: 350px; position: relative; background-image: linear-gradient(to bottom, transparent 56px, #f1f1f3 57px); background-size: 100% 57px; }
+    #calico-design-package .block { position: absolute; right: 5px; left: 5px; overflow: hidden; padding: 7px 8px; border-radius: 6px; font-size: 11px; line-height: 1.23; }
+    #calico-design-package .block strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+    #calico-design-package .block small { display: block; overflow: hidden; margin-top: 2px; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+    #calico-design-package .task-blue { background: #dceeff; color: #075296; }
+    #calico-design-package .task-orange { background: #ffebd8; color: #8b480d; }
+    #calico-design-package .event { border: 1px solid #8e68d8; border-radius: 6px; background: #f2edff; color: #543e8c; }
+    #calico-design-package .availability { background: repeating-linear-gradient(135deg,#f5f5f7 0,#f5f5f7 5px,#e5e5ea 5px,#e5e5ea 7px); color: #59595d; }
+    #calico-design-package .availability small { display: none; }
+    #calico-design-package .day-layout { display: grid; grid-template-columns: minmax(0,1fr) 180px; gap: 22px; }
+    #calico-design-package .day-list { border-top: 1px solid #e5e5ea; }
+    #calico-design-package .day-row { display: grid; grid-template-columns: 58px minmax(0,1fr); min-height: 73px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .day-row time { padding-top: 10px; color: #8e8e93; font-size: 11px; }
+    #calico-design-package .day-entry { margin: 7px 0; padding: 9px; border-radius: 6px; font-size: 13px; }
+    #calico-design-package .day-entry strong { display: block; }
+    #calico-design-package .day-entry small { display: block; margin-top: 3px; font-size: 11px; opacity: .8; }
+    #calico-design-package .day-aside { padding-left: 18px; border-left: 1px solid #e5e5ea; }
+    #calico-design-package .day-aside h2 { margin-bottom: 9px; color: #6e6e73; font-size: 11px; text-transform: uppercase; }
+    #calico-design-package .summary { padding: 12px; border-radius: 7px; background: #f5f5f7; font-size: 12px; line-height: 1.5; }
+    #calico-design-package .summary strong { display: block; font-size: 13px; }
+    #calico-design-package .agenda { max-width: 760px; border-top: 1px solid #e5e5ea; }
+    #calico-design-package .agenda-label { padding: 15px 0 5px; color: #6e6e73; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    #calico-design-package .agenda-row { display: grid; grid-template-columns: 18px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 12px 2px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .check { width: 17px; height: 17px; border: 1.5px solid #aeaeb2; border-radius: 50%; }
+    #calico-design-package .agenda-row strong { display: block; font-size: 14px; font-weight: 550; }
+    #calico-design-package .agenda-row p { margin: 3px 0 0; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .agenda-row time { color: #6e6e73; font-size: 11px; }
+    #calico-design-package .progress-popover { margin: -1px 0 10px 27px; padding: 10px 12px 11px; border-left: 2px solid #007aff; background: #f7f7f9; }
+    #calico-design-package .progress-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid #e1e1e5; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .progress-head button { min-height: 28px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #d2d2d7; border-radius: 6px; padding: 5px 7px; background: #fff; color: #1d1d1f; font-size: 12px; }
+    #calico-design-package .progress-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 9px; color: #515157; font-size: 12px; }
+    #calico-design-package .stepper { color: #007aff; font-weight: 600; }
+    #calico-design-package .allocation { display: flex; align-items: center; gap: 7px; padding-top: 9px; font-size: 12px; }
+    #calico-design-package .allocation span { margin-right: auto; color: #6e6e73; }
+    #calico-design-package .allocation button { min-height: 27px; border: 0; border-radius: 5px; padding: 5px 7px; background: #fff; color: #007aff; font-size: 11px; }
+    #calico-design-package .allocation button:first-of-type { background: #007aff; color: #fff; }
+    #calico-design-package .settings { max-width: 720px; border-top: 1px solid #e5e5ea; }
+    #calico-design-package .settings-section { padding: 17px 0 5px; color: #6e6e73; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    #calico-design-package .setting { min-height: 54px; display: flex; align-items: center; gap: 11px; padding: 9px 2px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .setting-copy { flex: 1; }
+    #calico-design-package .setting-copy strong { display: block; font-size: 14px; font-weight: 550; }
+    #calico-design-package .setting-copy p { margin: 2px 0 0; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .setting-value { color: #6e6e73; font-size: 13px; white-space: nowrap; }
+    #calico-design-package .chevron { width: 15px; height: 15px; color: #8e8e93; }
+    #calico-design-package .empty { min-height: 360px; display: grid; place-items: center; text-align: center; }
+    #calico-design-package .empty-inner { max-width: 270px; }
+    #calico-design-package .empty-icon { width: 44px; height: 44px; display: grid; place-items: center; margin: 0 auto 14px; border-radius: 12px; background: #e9f3ff; color: #007aff; }
+    #calico-design-package .empty h2 { margin-bottom: 7px; font-size: 18px; }
+    #calico-design-package .empty p { margin-bottom: 16px; color: #6e6e73; font-size: 13px; line-height: 1.4; }
+    #calico-design-package .primary { min-height: 32px; border: 0; border-radius: 7px; padding: 6px 12px; background: #007aff; color: #fff; font-size: 13px; font-weight: 550; }
+    #calico-design-package .modal-stage { min-height: 620px; display: grid; place-items: center; padding: 28px 14px; background: #f5f5f7; }
+    #calico-design-package .sheet { width: min(510px,100%); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 22px 56px rgba(28,28,36,.18); }
+    #calico-design-package .sheet-head { min-height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .sheet-head h1 { margin: 0; font-size: 16px; }
+    #calico-design-package .close { width: 28px; height: 28px; display: grid; place-items: center; border: 0; border-radius: 50%; background: #f2f2f7; color: #6e6e73; }
+    #calico-design-package .sheet-body { padding: 18px; }
+    #calico-design-package .sheet-foot { min-height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; border-top: 1px solid #e5e5ea; background: #fafafa; }
+    #calico-design-package .item-tabs { display: inline-flex; margin-bottom: 17px; padding: 2px; border-radius: 8px; background: #f2f2f7; }
+    #calico-design-package .item-tabs button { min-height: 29px; border: 0; border-radius: 6px; padding: 5px 11px; background: transparent; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .item-tabs button[aria-pressed="true"] { background: #fff; color: #1d1d1f; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+    #calico-design-package .title-input { width: 100%; padding: 4px 0 11px; border: 0; border-bottom: 1px solid #e5e5ea; color: #1d1d1f; font-size: 22px; outline: 0; }
+    #calico-design-package .form-row { min-height: 49px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .form-row label { flex: 1; font-size: 13px; }
+    #calico-design-package .form-row span { color: #6e6e73; font-size: 13px; }
+    #calico-design-package .form-row i { width: 16px; height: 16px; color: #8e8e93; }
+    #calico-design-package .place-row { min-height: 48px; display: flex; align-items: center; gap: 8px; color: #007aff; font-size: 13px; }
+    #calico-design-package .place-row strong { flex: 1; }
+    #calico-design-package .place-row span { color: #8e8e93; font-size: 12px; }
+    #calico-design-package .reserve-stage { min-height: 620px; display: grid; place-items: center; padding: 28px; background: #f5f5f7; }
+    #calico-design-package .reserve-board { width: min(670px,100%); position: relative; padding: 22px; border: 1px solid #d1d1d6; border-radius: 10px; background: #fff; box-shadow: 0 16px 42px rgba(28,28,36,.12); }
+    #calico-design-package .reserve-board h1 { margin-bottom: 17px; font-size: 21px; }
+    #calico-design-package .mini-grid { display: grid; grid-template-columns: 44px repeat(4,1fr); border-top: 1px solid #e5e5ea; border-left: 1px solid #e5e5ea; }
+    #calico-design-package .mini-grid > div { border-right: 1px solid #e5e5ea; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .mini-head { min-height: 43px; padding: 7px; color: #6e6e73; text-align: center; font-size: 11px; }
+    #calico-design-package .mini-head strong { display: block; margin-top: 2px; color: #1d1d1f; font-size: 13px; }
+    #calico-design-package .mini-time { padding: 7px 4px; background: #fcfcfd; color: #8e8e93; text-align: right; font-size: 10px; }
+    #calico-design-package .mini-cell { min-height: 280px; position: relative; background-image: linear-gradient(to bottom, transparent 55px, #f1f1f3 56px); background-size: 100% 56px; }
+    #calico-design-package .selection { position: absolute; top: 111px; right: 5px; left: 5px; height: 56px; border: 2px solid #007aff; border-radius: 6px; background: rgba(0,122,255,.06); }
+    #calico-design-package .popover { width: 224px; position: absolute; z-index: 2; top: 136px; right: 24px; padding: 12px; border: 1px solid #d1d1d6; border-radius: 9px; background: #fff; box-shadow: 0 14px 34px rgba(28,28,36,.16); }
+    #calico-design-package .popover h2 { margin-bottom: 4px; font-size: 13px; }
+    #calico-design-package .popover p { margin-bottom: 9px; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .pop-line { min-height: 33px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #e5e5ea; font-size: 11px; }
+    #calico-design-package .pop-line span { color: #007aff; }
+    #calico-design-package .pop-actions { display: flex; justify-content: flex-end; gap: 7px; padding-top: 10px; }
+    #calico-design-package .pop-actions button { min-height: 27px; border: 0; border-radius: 6px; padding: 4px 8px; background: transparent; color: #007aff; font-size: 11px; }
+    #calico-design-package .pop-actions button:last-child { background: #007aff; color: #fff; }
+    #calico-design-package .choice-sheet { width: min(540px,100%); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 22px 56px rgba(28,28,36,.18); }
+    #calico-design-package .choice-body { padding: 25px; }
+    #calico-design-package .choice-body h1 { margin-bottom: 8px; font-size: 23px; }
+    #calico-design-package .choice-body > p { margin-bottom: 17px; color: #6e6e73; font-size: 13px; line-height: 1.42; }
+    #calico-design-package .choice { width: 100%; min-height: 61px; display: flex; align-items: center; gap: 11px; border: 0; border-bottom: 1px solid #e5e5ea; padding: 10px 0; background: transparent; color: #1d1d1f; text-align: left; }
+    #calico-design-package .choice i { width: 19px; height: 19px; color: #007aff; }
+    #calico-design-package .choice span { flex: 1; }
+    #calico-design-package .choice strong { display: block; font-size: 13px; }
+    #calico-design-package .choice small { display: block; margin-top: 2px; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .choice b { color: #8e8e93; font-size: 17px; }
+    #calico-design-package .account-wrap, #calico-design-package .welcome-wrap { min-height: 620px; display: grid; place-items: center; padding: 28px; background: #f5f5f7; }
+    #calico-design-package .account-sheet { width: min(500px,100%); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 18px 48px rgba(28,28,36,.14); }
+    #calico-design-package .account-body { padding: 26px; }
+    #calico-design-package .account-mark { width: 40px; height: 40px; display: grid; place-items: center; margin-bottom: 14px; border-radius: 12px; background: #eaf4ff; color: #007aff; }
+    #calico-design-package .account-body h1 { margin-bottom: 7px; font-size: 23px; }
+    #calico-design-package .account-body p { color: #6e6e73; font-size: 13px; line-height: 1.42; }
+    #calico-design-package .email { width: 100%; min-height: 40px; margin: 8px 0 12px; border: 1px solid #d2d2d7; border-radius: 7px; padding: 8px 10px; outline: 0; }
+    #calico-design-package .merge-option { display: block; width: 100%; margin-top: 9px; border: 1px solid #d9d9de; border-radius: 8px; padding: 12px; background: #fff; color: #1d1d1f; text-align: left; }
+    #calico-design-package .merge-option[aria-pressed="true"] { border-color: #007aff; background: #f0f7ff; }
+    #calico-design-package .merge-option strong { display: block; font-size: 13px; }
+    #calico-design-package .merge-option small { display: block; margin-top: 3px; color: #6e6e73; font-size: 12px; line-height: 1.35; }
+    #calico-design-package .welcome-window { min-height: 620px; overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #f5f5f7; box-shadow: 0 18px 46px rgba(28,28,36,.13); }
+    #calico-design-package .welcome-bar { height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 14px; border-bottom: 1px solid rgba(60,60,67,.14); background: rgba(250,250,252,.94); }
+    #calico-design-package .welcome-bar strong { margin-right: auto; font-size: 14px; }
+    #calico-design-package .text { border: 0; padding: 0; background: transparent; color: #007aff; font-size: 13px; }
+    #calico-design-package .landing { min-height: 571px; position: relative; overflow: hidden; }
+    #calico-design-package .landing-copy { width: 405px; position: relative; z-index: 2; padding: 83px 0 0 50px; }
+    #calico-design-package .landing-copy h1 { margin-bottom: 14px; font-size: 40px; line-height: 1.06; }
+    #calico-design-package .landing-copy p { max-width: 305px; margin-bottom: 22px; color: #515157; font-size: 16px; line-height: 1.45; }
+    #calico-design-package .landing-copy small { display: block; margin-top: 17px; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .landing-preview { width: 610px; height: 430px; position: absolute; top: 76px; right: -62px; transform: rotate(-4deg); padding: 20px; border: 1px solid #e2e2e7; border-radius: 12px; background: rgba(255,255,255,.86); box-shadow: 0 24px 46px rgba(35,35,45,.12); }
+    #calico-design-package .landing-preview h2 { margin-bottom: 13px; font-size: 16px; }
+    #calico-design-package .setup-sheet { width: min(500px,100%); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 18px 48px rgba(28,28,36,.12); }
+    #calico-design-package .setup-progress { display: flex; gap: 5px; padding: 18px 20px 0; }
+    #calico-design-package .setup-progress b { height: 4px; flex: 1; border-radius: 4px; background: #e5e5ea; }
+    #calico-design-package .setup-progress b.is-done { background: #007aff; }
+    #calico-design-package .setup-body { padding: 26px 28px 20px; }
+    #calico-design-package .setup h1 { margin-bottom: 8px; font-size: 25px; }
+    #calico-design-package .setup p { margin-bottom: 20px; color: #6e6e73; font-size: 13px; line-height: 1.45; }
+    #calico-design-package .setup-row { min-height: 51px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #e5e5ea; }
+    #calico-design-package .setup-row:last-child { border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .setup-row label { flex: 1; font-size: 13px; }
+    #calico-design-package .setup-row input { width: 100px; border: 0; color: #007aff; text-align: right; outline: 0; }
+    #calico-design-package .intensity { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    #calico-design-package .intensity button { min-height: 74px; border: 1px solid #e1e1e5; border-radius: 8px; background: #fff; color: #3a3a3c; font-size: 12px; }
+    #calico-design-package .intensity button[aria-pressed="true"] { border-color: #007aff; background: #f0f7ff; color: #005ecb; }
+    #calico-design-package .intensity strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    #calico-design-package .setup-actions { min-height: 57px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; border-top: 1px solid #e5e5ea; background: #fafafa; }
+    #calico-design-package .setup-actions button { min-height: 32px; border: 0; border-radius: 7px; padding: 6px 11px; background: transparent; color: #6e6e73; font-size: 13px; }
+    #calico-design-package .setup-actions button:last-child { background: #007aff; color: #fff; font-weight: 550; }
+    @media (max-width: 620px) { #calico-design-package .traffic, #calico-design-package .period { display:none; } #calico-design-package .shell { display:block; } #calico-design-package .sidebar { display:flex; gap:7px; overflow-x:auto; padding:8px; border-right:0; border-bottom:1px solid #e5e5ea; } #calico-design-package .sidebar-label, #calico-design-package .projects { display:none; } #calico-design-package .sidebar nav { display:flex; margin:0; } #calico-design-package .sidebar button { white-space:nowrap; } #calico-design-package .main-page { padding:17px 12px; } #calico-design-package .week-grid { grid-template-columns:42px repeat(3,minmax(80px,1fr)); } #calico-design-package .hide-small { display:none; } #calico-design-package .day-layout { display:block; } #calico-design-package .day-aside { margin-top:15px; padding:15px 0 0; border-top:1px solid #e5e5ea; border-left:0; } #calico-design-package .landing-preview { display:none; } #calico-design-package .landing-copy { width:100%; padding:80px 26px 0; } #calico-design-package .landing-copy h1 { font-size:34px; } }
+    #calico-design-package .tool-icon { width: 29px; height: 29px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #5a5a60; }
+    #calico-design-package .tool-icon i { width: 16px; height: 16px; }
+    #calico-design-package .filter-row { display: flex; align-items: center; gap: 6px; margin: -8px 0 17px; }
+    #calico-design-package .filter-row span { margin-right: 2px; color: #8e8e93; font-size: 11px; }
+    #calico-design-package .filter-row button { min-height: 26px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #d7d7dc; border-radius: 6px; padding: 4px 7px; background: #fff; color: #515157; font-size: 11px; }
+    #calico-design-package .filter-row button[aria-pressed="true"] { border-color: #9cc9ff; background: #edf6ff; color: #0066d6; }
+    #calico-design-package .filter-row .dot { width: 6px; height: 6px; }
+    #calico-design-package .outcome-panel { margin: -1px 0 10px 27px; padding: 11px 12px 12px; border-left: 2px solid #007aff; background: #f7f7f9; }
+    #calico-design-package .outcome-panel h2 { margin: 0 0 9px; font-size: 13px; }
+    #calico-design-package .outcome-buttons { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; }
+    #calico-design-package .outcome-buttons button { min-height: 31px; border: 1px solid #d9d9de; border-radius: 6px; padding: 4px; background: #fff; color: #515157; font-size: 10px; }
+    #calico-design-package .outcome-buttons button[aria-pressed="true"] { border-color: #007aff; background: #eaf4ff; color: #0066d6; font-weight: 600; }
+    #calico-design-package .outcome-note { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .outcome-note strong { color: #1d1d1f; font-size: 12px; }
+    #calico-design-package .agenda-row.skipped { opacity: .48; }
+    #calico-design-package .agenda-row.skipped strong { text-decoration: line-through; }
+    #calico-design-package .agenda-row .restore { border: 0; background: transparent; color: #007aff; font-size: 11px; }
+    #calico-design-package .day-aside .secondary { width: 100%; margin-top: 8px; }
+    #calico-design-package .sheet-subtitle { margin: 3px 0 0; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .options-toggle { width: 100%; min-height: 41px; display: flex; align-items: center; justify-content: space-between; border: 0; border-bottom: 1px solid #e5e5ea; padding: 0; background: transparent; color: #007aff; font-size: 13px; text-align: left; }
+    #calico-design-package .advanced-options { padding: 1px 0 4px; }
+    #calico-design-package .advanced-options .form-row { min-height: 43px; }
+    #calico-design-package .form-note { margin: 8px 0 0; color: #6e6e73; font-size: 11px; line-height: 1.35; }
+    #calico-design-package .colour-samples { display: flex; gap: 7px; padding: 12px 0 3px; }
+    #calico-design-package .colour-samples b { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #c7c7cc; }
+    #calico-design-package .detail-stage, #calico-design-package .control-stage, #calico-design-package .settings-detail-stage, #calico-design-package .feedback-stage { min-height: 620px; display: grid; place-items: center; padding: 28px; background: #f5f5f7; }
+    #calico-design-package .detail-shell, #calico-design-package .control-shell, #calico-design-package .settings-detail, #calico-design-package .feedback-shell { width: min(580px,100%); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 20px 52px rgba(28,28,36,.15); }
+    #calico-design-package .detail-head { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 21px 16px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .detail-head .eyebrow { margin-bottom: 5px; color: #8e8e93; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    #calico-design-package .detail-head h1 { margin: 0; font-size: 22px; }
+    #calico-design-package .detail-body { padding: 4px 21px 18px; }
+    #calico-design-package .detail-section { padding: 15px 0; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .detail-section:last-child { border-bottom: 0; }
+    #calico-design-package .detail-section > span { display: block; margin-bottom: 6px; color: #8e8e93; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    #calico-design-package .detail-section p { margin: 0; color: #515157; font-size: 13px; line-height: 1.45; }
+    #calico-design-package .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #calico-design-package .detail-grid div { color: #6e6e73; font-size: 12px; }
+    #calico-design-package .detail-grid strong { display: block; margin-top: 3px; color: #1d1d1f; font-size: 13px; }
+    #calico-design-package .detail-status { display: flex; align-items: center; gap: 8px; color: #166534; font-size: 13px; }
+    #calico-design-package .detail-status i { width: 17px; height: 17px; }
+    #calico-design-package .control-canvas { min-height: 330px; position: relative; margin: 18px; border: 1px solid #e5e5ea; background-image: linear-gradient(to bottom, transparent 53px, #f0f0f2 54px); background-size: 100% 54px; }
+    #calico-design-package .control-time { position: absolute; top: 8px; left: 8px; color: #8e8e93; font-size: 10px; }
+    #calico-design-package .control-block { position: absolute; top: 108px; right: 18px; left: 64px; min-height: 83px; padding: 10px; border: 2px solid #007aff; border-radius: 7px; background: #eaf4ff; color: #075296; }
+    #calico-design-package .control-block strong { display: block; font-size: 13px; }
+    #calico-design-package .control-block small { display: block; margin-top: 4px; font-size: 11px; }
+    #calico-design-package .control-popover { width: 248px; position: absolute; z-index: 2; top: 145px; right: 26px; padding: 13px; border: 1px solid #d1d1d6; border-radius: 9px; background: #fff; box-shadow: 0 13px 34px rgba(28,28,36,.18); }
+    #calico-design-package .control-popover h2 { margin: 0 0 3px; font-size: 14px; }
+    #calico-design-package .control-popover p { margin: 0 0 10px; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .segmented { display: flex; margin-bottom: 9px; padding: 2px; border-radius: 7px; background: #f2f2f7; }
+    #calico-design-package .segmented button { flex: 1; min-height: 26px; border: 0; border-radius: 5px; background: transparent; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .segmented button[aria-pressed="true"] { background: #fff; color: #1d1d1f; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+    #calico-design-package .validation { margin-top: 9px; color: #b42318; font-size: 11px; line-height: 1.35; }
+    #calico-design-package .field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    #calico-design-package .field-pair div { min-height: 31px; padding: 7px 8px; border: 1px solid #d2d2d7; border-radius: 6px; color: #515157; font-size: 11px; }
+    #calico-design-package .day-hours-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 18px; }
+    #calico-design-package .day-hours-grid div { min-height: 68px; padding: 10px; border: 1px solid #e1e1e5; border-radius: 7px; background: #fbfbfc; }
+    #calico-design-package .day-hours-grid span { display: block; color: #8e8e93; font-size: 10px; text-transform: uppercase; }
+    #calico-design-package .day-hours-grid strong { display: block; margin-top: 6px; font-size: 14px; }
+    #calico-design-package .warning-line { margin: 0 18px 18px; padding: 10px; border-radius: 7px; background: #fff4e5; color: #8a4b00; font-size: 12px; line-height: 1.4; }
+    #calico-design-package .settings-detail .settings-section { padding-left: 21px; padding-right: 21px; }
+    #calico-design-package .settings-detail .setting { margin: 0 21px; }
+    #calico-design-package .destructive { color: #d92d20 !important; }
+    #calico-design-package .feedback-shell { width: min(630px,100%); padding: 21px; }
+    #calico-design-package .feedback-shell h1 { margin: 0 0 13px; font-size: 20px; }
+    #calico-design-package .search-field { min-height: 38px; display: flex; align-items: center; gap: 8px; border: 1px solid #c7c7cc; border-radius: 8px; padding: 0 10px; }
+    #calico-design-package .search-field input { width: 100%; border: 0; outline: 0; font-size: 13px; }
+    #calico-design-package .search-results { margin-top: 10px; border-top: 1px solid #e5e5ea; }
+    #calico-design-package .search-result { min-height: 53px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #e5e5ea; color: #1d1d1f; }
+    #calico-design-package .search-result i { width: 16px; height: 16px; color: #8e8e93; }
+    #calico-design-package .search-result span { flex: 1; }
+    #calico-design-package .search-result strong { display: block; font-size: 13px; }
+    #calico-design-package .search-result small { display: block; margin-top: 2px; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .feedback-row { display: flex; align-items: center; gap: 9px; margin-top: 15px; padding: 10px 12px; border-radius: 7px; background: #f5f5f7; color: #515157; font-size: 12px; }
+    #calico-design-package .feedback-row.success { background: #ecfdf3; color: #166534; }
+    #calico-design-package .feedback-row.warning { background: #fff4e5; color: #8a4b00; }
+    #calico-design-package .feedback-row i { width: 16px; height: 16px; }
+    #calico-design-package .undo-toast { display: flex; align-items: center; gap: 11px; margin: 18px 0 0 auto; padding: 10px 12px; border-radius: 8px; background: #303036; color: #fff; font-size: 12px; }
+    #calico-design-package .undo-toast button { margin-left: auto; border: 0; background: transparent; color: #79b9ff; font-size: 12px; }
+    #calico-design-package .options-sheet { width: min(540px,100%); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 20px 52px rgba(28,28,36,.15); }
+    #calico-design-package .options-sheet .sheet-body { padding-top: 12px; }
+    #calico-design-package .options-section-title { margin: 14px 0 2px; color: #8e8e93; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    #calico-design-package .option-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .option-chips button { min-height: 28px; border: 1px solid #d2d2d7; border-radius: 6px; padding: 4px 8px; background: #fff; color: #515157; font-size: 11px; }
+    #calico-design-package .option-chips button[aria-pressed="true"] { border-color: #007aff; background: #eaf4ff; color: #0066d6; }
+    #calico-design-package .sync-state { display: flex; align-items: flex-start; gap: 11px; margin-top: 16px; padding: 12px; border-radius: 8px; background: #fff4e5; color: #8a4b00; font-size: 12px; line-height: 1.4; }
+    #calico-design-package .sync-state i { width: 17px; height: 17px; flex: 0 0 auto; }
+    #calico-design-package .event-kind { min-height: 39px; display: flex; align-items: center; gap: 7px; margin: 12px 0 4px; padding: 4px; border-radius: 8px; background: #f2f2f7; }
+    #calico-design-package .event-kind button { flex: 1; min-height: 29px; border: 0; border-radius: 6px; background: transparent; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .event-kind button[aria-pressed="true"] { background: #fff; color: #1d1d1f; box-shadow: 0 1px 2px rgba(0,0,0,.11); }
+    #calico-design-package .drag-ghost { position: absolute; top: 55px; left: 64px; right: 165px; min-height: 48px; padding: 8px 10px; border: 1px dashed #007aff; border-radius: 6px; background: rgba(0,122,255,.07); color: #007aff; font-size: 11px; }
+    #calico-design-package .drop-slot { position: absolute; top: 215px; left: 64px; right: 165px; height: 54px; border: 1px dashed #86bbf5; border-radius: 6px; background: #f5faff; color: #007aff; text-align: center; font-size: 11px; line-height: 54px; }
+    #calico-design-package .safety-stage { min-height: 620px; display: grid; place-items: center; padding: 28px; background: #f5f5f7; }
+    #calico-design-package .safety-sheet { width: min(550px,100%); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 20px 52px rgba(28,28,36,.15); }
+    #calico-design-package .safety-body { padding: 21px; }
+    #calico-design-package .safety-body h1 { margin: 0 0 7px; font-size: 21px; }
+    #calico-design-package .safety-body > p { margin: 0 0 15px; color: #6e6e73; font-size: 13px; line-height: 1.42; }
+    #calico-design-package .safety-compare { border-top: 1px solid #e5e5ea; }
+    #calico-design-package .safety-compare div { min-height: 43px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #e5e5ea; color: #515157; font-size: 13px; }
+    #calico-design-package .safety-compare strong { color: #1d1d1f; font-size: 13px; }
+    #calico-design-package .danger-note { margin-top: 15px; padding: 10px; border-radius: 7px; background: #fff1f0; color: #b42318; font-size: 12px; line-height: 1.4; }
+    #calico-design-package .distribution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    #calico-design-package .distribution-grid button { min-height: 68px; border: 1px solid #e1e1e5; border-radius: 8px; padding: 10px; background: #fff; color: #515157; text-align: left; font-size: 12px; }
+    #calico-design-package .distribution-grid button[aria-pressed="true"] { border-color: #007aff; background: #f0f7ff; color: #0066d6; }
+    #calico-design-package .distribution-grid strong { display: block; margin-bottom: 4px; font-size: 13px; }
+    #calico-design-package .filter-row .filter-reset { border-color: transparent; background: transparent; color: #007aff; }
+    #calico-design-package .project-editor { max-width: 720px; }
+    #calico-design-package .project-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 23px 0 8px; }
+    #calico-design-package .project-editor-head h2 { margin: 0; font-size: 15px; }
+    #calico-design-package .project-row { min-height: 58px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #e5e5ea; padding: 10px 0; }
+    #calico-design-package .project-row:last-child { border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .project-swatch { width: 18px; height: 18px; flex: 0 0 auto; border-radius: 50%; box-shadow: 0 0 0 1px rgba(60,60,67,.16); }
+    #calico-design-package .project-row strong { display: block; font-size: 13px; }
+    #calico-design-package .project-row small { display: block; margin-top: 2px; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .project-row .project-copy { flex: 1; }
+    #calico-design-package .project-action { min-height: 28px; border: 0; border-radius: 6px; padding: 4px 8px; background: #f2f2f7; color: #515157; font-size: 11px; }
+    #calico-design-package .project-action i { width: 13px; height: 13px; display: block; }
+    #calico-design-package .project-new { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 10px; padding: 13px 0; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .project-new input { min-width: 0; border: 0; outline: 0; color: #1d1d1f; font-size: 13px; }
+    #calico-design-package .colour-picker { display: flex; align-items: center; gap: 7px; }
+    #calico-design-package .colour-picker button, #calico-design-package .colour-samples button { width: 18px; height: 18px; border: 2px solid #fff; border-radius: 50%; padding: 0; box-shadow: 0 0 0 1px #c7c7cc; }
+    #calico-design-package .colour-picker button[aria-pressed="true"], #calico-design-package .colour-samples button[aria-pressed="true"] { box-shadow: 0 0 0 2px #007aff; }
+    #calico-design-package .allocation-body { padding: 8px 21px 20px; }
+    #calico-design-package .allocation-summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0 14px; border-bottom: 1px solid #e5e5ea; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .allocation-summary strong { color: #1d1d1f; font-size: 13px; }
+    #calico-design-package .allocation-stepper { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 0; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .allocation-stepper span { color: #515157; font-size: 13px; }
+    #calico-design-package .stepper-controls { display: inline-flex; align-items: center; gap: 12px; min-height: 31px; border-radius: 7px; background: #f2f2f7; padding: 2px 4px; }
+    #calico-design-package .stepper-controls button { width: 25px; height: 25px; display: grid; place-items: center; border: 0; border-radius: 5px; background: #fff; color: #007aff; font-size: 16px; }
+    #calico-design-package .stepper-controls strong { min-width: 32px; text-align: center; font-size: 13px; }
+    #calico-design-package .allocation-list { margin: 16px 0 0; }
+    #calico-design-package .allocation-list > span { display: block; margin-bottom: 5px; color: #8e8e93; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    #calico-design-package .allocation-day { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 39px; border-bottom: 1px solid #e5e5ea; color: #515157; font-size: 12px; }
+    #calico-design-package .allocation-day strong { color: #1d1d1f; }
+    #calico-design-package .allocation-note { margin: 14px 0 0; color: #6e6e73; font-size: 12px; line-height: 1.42; }
+    #calico-design-package .confirm-tabs { display: flex; gap: 5px; padding: 12px 21px 2px; }
+    #calico-design-package .confirm-tabs button { min-height: 28px; border: 0; border-radius: 6px; padding: 4px 8px; background: transparent; color: #6e6e73; font-size: 11px; }
+    #calico-design-package .confirm-tabs button[aria-pressed="true"] { background: #f2f2f7; color: #1d1d1f; }
+    #calico-design-package .confirm-state { display: none; padding: 13px 21px 21px; }
+    #calico-design-package .confirm-state.is-active { display: block; }
+    #calico-design-package .confirm-state h2 { margin: 0 0 7px; font-size: 19px; }
+    #calico-design-package .confirm-state p { margin: 0; color: #6e6e73; font-size: 13px; line-height: 1.42; }
+    #calico-design-package .confirm-state .danger-note { margin-bottom: 0; }
+    #calico-design-package .danger-primary { min-height: 31px; border: 0; border-radius: 7px; padding: 6px 11px; background: #d92d20; color: #fff; font-size: 12px; font-weight: 600; }
+    #calico-design-package .search-tabs { display: flex; gap: 5px; margin: 0 0 13px; }
+    #calico-design-package .search-tabs button { min-height: 29px; border: 0; border-radius: 6px; padding: 4px 8px; background: transparent; color: #6e6e73; font-size: 12px; }
+    #calico-design-package .search-tabs button[aria-pressed="true"] { background: #f2f2f7; color: #1d1d1f; }
+    #calico-design-package .search-state { display: none; }
+    #calico-design-package .search-state.is-active { display: block; }
+    #calico-design-package .search-empty { min-height: 164px; display: grid; place-items: center; padding: 20px; color: #6e6e73; text-align: center; }
+    #calico-design-package .search-empty i { width: 25px; height: 25px; margin-bottom: 8px; color: #8e8e93; }
+    #calico-design-package .search-empty strong { display: block; color: #3a3a3c; font-size: 13px; }
+    #calico-design-package .search-empty span { display: block; margin-top: 3px; font-size: 12px; }
+  </style>
+
+  <nav class="package-nav" aria-label="Calico design package">
+    <span>Calico desktop</span>
+    <button type="button" data-package="planner" aria-pressed="true">Planner</button>
+    <button type="button" data-package="new-item" aria-pressed="false">New item</button>
+    <button type="button" data-package="task-options" aria-pressed="false">Task options</button>
+    <button type="button" data-package="event-options" aria-pressed="false">Event options</button>
+    <button type="button" data-package="reserve" aria-pressed="false">Reserve time</button>
+    <button type="button" data-package="conflict" aria-pressed="false">Scheduling choice</button>
+    <button type="button" data-package="task-detail" aria-pressed="false">Task detail</button>
+    <button type="button" data-package="block-control" aria-pressed="false">Block control</button>
+    <button type="button" data-package="day-hours" aria-pressed="false">Day hours</button>
+    <button type="button" data-package="day-allocation" aria-pressed="false">Day allocation</button>
+    <button type="button" data-package="project-management" aria-pressed="false">Projects</button>
+    <button type="button" data-package="search-feedback" aria-pressed="false">Search &amp; feedback</button>
+    <button type="button" data-package="data-safety" aria-pressed="false">Data safety</button>
+    <button type="button" data-package="confirm-delete" aria-pressed="false">Confirm delete</button>
+    <button type="button" data-package="account" aria-pressed="false">Account</button>
+    <button type="button" data-package="sync-status" aria-pressed="false">Sync status</button>
+    <button type="button" data-package="welcome" aria-pressed="false">Welcome</button>
+  </nav>
+
+  <section class="package is-active" data-panel="planner">
+    <div class="app"><header class="toolbar"><span class="traffic" aria-hidden="true"><b></b><b></b><b></b></span><span class="brand">Calico</span><button class="tool-icon" type="button" aria-label="Search tasks" data-package="search-feedback"><i data-lucide="search" aria-hidden="true"></i></button><span class="period"><b>‹</b>18-22 May<b>›</b></span><button class="tool-icon" type="button" aria-label="Undo last change"><i data-lucide="undo-2" aria-hidden="true"></i></button><button class="icon-button" type="button" aria-label="Add task" data-package="new-item"><i data-lucide="plus" aria-hidden="true"></i></button></header>
+      <div class="shell"><aside class="sidebar"><div class="sidebar-label">Plan</div><nav><button data-page-button="day" aria-pressed="false"><i data-lucide="sun-medium" aria-hidden="true"></i>Today</button><button data-page-button="week" aria-pressed="true"><i data-lucide="calendar-days" aria-hidden="true"></i>Week</button><button data-page-button="agenda" aria-pressed="false"><i data-lucide="list-todo" aria-hidden="true"></i>Agenda</button><button data-page-button="empty" aria-pressed="false"><i data-lucide="circle-dashed" aria-hidden="true"></i>Empty state</button><button data-page-button="review" aria-pressed="false"><i data-lucide="triangle-alert" aria-hidden="true"></i>Review</button><button data-page-button="settings" aria-pressed="false"><i data-lucide="settings-2" aria-hidden="true"></i>Settings</button></nav><div class="projects"><div class="sidebar-label">Projects</div><nav><button><span class="dot" style="background:#007aff"></span>Personal</button><button><span class="dot" style="background:#8e68d8"></span>Harbour launch</button><button><span class="dot" style="background:#e67817"></span>Studio</button></nav></div></aside>
+        <main class="content">
+          <section class="page is-active" data-page="week"><div class="main-page"><div class="page-head"><div><h1>This week</h1><p>Your time, shaped around what is fixed.</p></div><button class="secondary" data-package="reserve"><i data-lucide="calendar-plus" aria-hidden="true"></i> Reserve time</button></div><div class="filter-row"><span>Show</span><button aria-pressed="true"><b class="dot" style="background:#007aff"></b> Personal</button><button aria-pressed="true"><b class="dot" style="background:#8e68d8"></b> Harbour launch</button><button aria-pressed="false"><b class="dot" style="background:#e67817"></b> Studio</button><button class="filter-reset">Show all</button></div><div class="week-grid"><div></div><div class="day-label">MON<strong>18</strong></div><div class="day-label today">TUE<strong>19</strong></div><div class="day-label">WED<strong>20</strong></div><div class="day-label hide-small">THU<strong>21</strong></div><div class="day-label hide-small">FRI<strong>22</strong></div><div class="time-axis">08:00<br>09:00<br>10:00<br>11:00<br>12:00<br>13:00</div><div class="schedule-cell"><div class="block task-blue" style="top:67px;height:70px"><strong>Write launch brief</strong><small>Task · 2h · preferred</small></div></div><div class="schedule-cell"><div class="block availability" style="top:4px;height:51px"><strong>School run</strong><small>Weekdays</small></div><div class="block event" style="top:170px;height:81px"><strong>Prototype review</strong><small>Event · 14:00-16:00</small></div></div><div class="schedule-cell"><div class="block task-blue" style="top:112px;height:69px"><strong>Refine onboarding</strong><small>Task · 2h · preferred</small></div></div><div class="schedule-cell hide-small"></div><div class="schedule-cell hide-small"><div class="block task-orange" style="top:67px;height:66px"><strong>Client notes</strong><small>Task · 1h · automatic</small></div></div></div></div></section>
+          <section class="page" data-page="day"><div class="main-page"><div class="page-head"><div><h1>Today</h1><p>Tuesday, 19 May</p></div><button class="secondary" data-package="reserve"><i data-lucide="calendar-plus" aria-hidden="true"></i> Reserve time</button></div><div class="day-layout"><div class="day-list"><div class="day-row"><time>08:00</time><div class="day-entry availability"><strong>School run</strong><small>Until 09:00 · reserved every weekday</small></div></div><div class="day-row"><time>09:30</time><div class="day-entry task-blue"><strong>Write launch brief</strong><small>Task · 2h · preferred</small></div></div><div class="day-row"><time>14:00</time><div class="day-entry event"><strong>Prototype review</strong><small>Event · fixed until 16:00</small></div></div></div><aside class="day-aside"><h2>Working day</h2><div class="summary"><strong>09:00-17:00</strong>6h focused work<br>1h protected space</div><button class="secondary" data-package="day-hours">Adjust working hours</button><button class="text" data-package="day-allocation">Adjust task hours</button></aside></div></div></section>
+          <section class="page" data-page="agenda"><div class="main-page"><div class="page-head"><div><h1>Agenda</h1><p>Everything Calico is holding, in decision order.</p></div></div><div class="agenda"><div class="agenda-label">Today · 4h planned</div><div class="agenda-row"><span class="check"></span><div><strong>Write launch brief</strong><p><span class="dot" style="background:#007aff"></span> Personal · 2h · preferred 09:30</p></div><time>Today</time></div><div class="outcome-panel"><h2>Update task</h2><div class="outcome-buttons"><button aria-pressed="false">Completed</button><button aria-pressed="true">Partially<br>completed</button><button aria-pressed="false">Incomplete</button><button aria-pressed="false">Skipped</button></div><div class="outcome-note"><span>Completed today</span><strong>- &nbsp; 1.5h &nbsp; +</strong><span>30 min remains</span></div><div class="option-chips"><button aria-pressed="true">Let Calico place it</button><button>Choose time</button></div></div><div class="agenda-row"><span class="check"></span><div><strong>Prototype review</strong><p><span class="dot" style="background:#8e68d8"></span> Harbour launch · Event · fixed 14:00</p></div><time>Today</time></div><div class="agenda-label">This week</div><div class="agenda-row skipped"><span class="check"></span><div><strong>Refine onboarding</strong><p><span class="dot" style="background:#007aff"></span> Personal · skipped Tuesday</p></div><button class="restore">Restore</button></div></div></div></section>
+          <section class="page" data-page="review"><div class="main-page"><div class="page-head"><div><h1>Review</h1><p>Only tasks that need a decision appear here.</p></div></div><div class="agenda"><div class="agenda-label">Needs your choice</div><div class="agenda-row"><i data-lucide="triangle-alert" style="color:#b26b00" aria-hidden="true"></i><div><strong>Write launch brief</strong><p><span class="dot" style="background:#e67817"></span> 2.5h will not fit before Friday</p></div><button class="secondary" data-package="conflict">Choose</button></div><div class="agenda-label">Resolved</div><div class="agenda-row skipped"><i data-lucide="circle-check" style="color:#22813f" aria-hidden="true"></i><div><strong>Refine onboarding</strong><p><span class="dot" style="background:#007aff"></span> Deferred to next week</p></div><time>Yesterday</time></div></div></div></section>
+          <section class="page" data-page="settings"><div class="main-page"><div class="page-head"><div><h1>Settings</h1><p>Make the plan fit the life around it.</p></div></div><div class="settings"><div class="settings-section">Planning</div><div class="setting"><div class="setting-copy"><strong>Baseline intensity</strong><p>Typical sustainable productive capacity.</p></div><span class="setting-value">7 / 10</span><i class="chevron" data-lucide="chevron-right"></i></div><div class="setting"><div class="setting-copy"><strong>Default working hours</strong><p>Set a pattern, then adjust individual days.</p></div><span class="setting-value">09:00-18:00</span><i class="chevron" data-lucide="chevron-right"></i></div><div class="setting"><div class="setting-copy"><strong>Minimum task block</strong><p>Smallest useful planning unit.</p></div><span class="setting-value">30 min</span><i class="chevron" data-lucide="chevron-right"></i></div><div class="settings-section">Organisation</div><button class="setting" data-page-button="projects"><div class="setting-copy"><strong>Projects</strong><p>Personal, Harbour launch, Studio</p></div><span class="setting-value">Manage</span><i class="chevron" data-lucide="chevron-right"></i></button><div class="setting"><div class="setting-copy"><strong>Backup &amp; restore</strong><p>Export a copy or review an imported plan.</p></div><button class="text" data-package="data-safety">Review import</button><i class="chevron" data-lucide="chevron-right"></i></div><button class="setting" data-package="confirm-delete"><div class="setting-copy"><strong class="destructive">Reset all Calico data</strong><p>Tasks, events, projects, and planning history.</p></div><i class="chevron destructive" data-lucide="trash-2"></i></button><div class="settings-section">Account</div><div class="setting"><div class="setting-copy"><strong>emma@calico.app</strong><p>Synced just now across your signed-in devices.</p></div><span class="setting-value" style="color:#22813f">Synced</span><i class="chevron" data-lucide="chevron-right"></i></div></div></div></section>
+          <section class="page" data-page="projects"><div class="main-page"><div class="page-head"><div><p style="margin:0 0 5px"><button class="text" data-page-button="settings">Settings</button></p><h1>Projects</h1><p>Keep related tasks together without changing their schedule.</p></div><button class="secondary"><i data-lucide="plus" aria-hidden="true"></i> Add project</button></div><div class="project-editor"><div class="project-editor-head"><h2>Your projects</h2><span class="setting-value">3 projects</span></div><div class="project-row"><b class="project-swatch" style="background:#007aff"></b><div class="project-copy"><strong>Personal</strong><small>5 tasks</small></div><button class="project-action">Rename</button><button class="project-action">Archive</button></div><div class="project-row"><b class="project-swatch" style="background:#8e68d8"></b><div class="project-copy"><strong>Harbour launch</strong><small>6 tasks</small></div><button class="project-action">Rename</button><button class="project-action">Archive</button></div><div class="project-row"><b class="project-swatch" style="background:#e67817"></b><div class="project-copy"><strong>Studio</strong><small>2 tasks</small></div><button class="project-action">Rename</button><button class="project-action">Archive</button></div><div class="project-editor-head"><h2>New project</h2></div><div class="project-new"><b class="project-swatch" style="background:#2b9c66"></b><input value="Client work" aria-label="Project name"><div class="colour-picker" aria-label="Project colour"><button aria-pressed="false" style="background:#007aff"></button><button aria-pressed="false" style="background:#8e68d8"></button><button aria-pressed="false" style="background:#e67817"></button><button aria-pressed="true" style="background:#2b9c66"></button></div></div></div></div></section>
+          <section class="page" data-page="empty"><div class="main-page"><div class="page-head"><div><h1>Your week</h1><p>Start with one thing that needs your attention.</p></div></div><div class="empty"><div class="empty-inner"><div class="empty-icon"><i data-lucide="sparkle" aria-hidden="true"></i></div><h2>Nothing planned yet</h2><p>Add a task and Calico will find it a realistic place in your week.</p><button class="primary" data-package="new-item">Add your first task</button></div></div></div></section>
+        </main></div></div>
+  </section>
+
+  <section class="package" data-panel="new-item"><div class="modal-stage"><section class="sheet"><header class="sheet-head"><h1 id="new-item-title">New task</h1><button class="close" type="button"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="sheet-body"><div class="item-tabs"><button data-item-type="task" aria-pressed="true">Task</button><button data-item-type="event" aria-pressed="false">Event</button></div><div class="item-form is-active" data-item="task"><input class="title-input" value="Write launch brief" aria-label="Task name"><div class="form-row"><i data-lucide="folder"></i><label>Project</label><span>Personal</span></div><div class="form-row"><i data-lucide="clock-3"></i><label>Expected time</label><span>- &nbsp; 2h &nbsp; +</span></div><div class="form-row"><i data-lucide="calendar-days"></i><label>Due</label><span>Friday, 22 May</span></div><div class="place-row"><i data-lucide="calendar-clock"></i><strong>Place it in my day</strong><span>Preferred · 09:30</span><i data-lucide="chevron-down"></i></div><button class="options-toggle" data-package="task-options">More task options <i data-lucide="chevron-right" aria-hidden="true"></i></button></div><div class="item-form" data-item="event"><input class="title-input" value="Prototype review" aria-label="Event name"><div class="form-row"><i data-lucide="calendar-days"></i><label>Date</label><span>Tuesday, 19 May</span></div><div class="form-row"><i data-lucide="clock-3"></i><label>Time</label><span>14:00-16:00</span></div><button class="options-toggle" data-package="event-options">Repeat and more options <i data-lucide="chevron-right" aria-hidden="true"></i></button></div></div><footer class="sheet-foot"><button class="text" type="button">Cancel</button><button class="primary" id="new-item-save">Add task</button></footer></section></div></section>
+
+  <section class="package" data-panel="task-options"><div class="modal-stage"><section class="options-sheet"><header class="sheet-head"><div><h1>More task options</h1><p class="sheet-subtitle">Write launch brief</p></div><button class="close" type="button" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="sheet-body"><div class="options-section-title">Scheduling</div><div class="form-row"><i data-lucide="repeat-2"></i><label>Repeat</label><span>Does not repeat</span></div><div class="form-row"><i data-lucide="calendar-plus"></i><label>Do not schedule before</label><span>Wednesday, 20 May</span></div><div class="form-row"><i data-lucide="blocks"></i><label>Minimum block</label><span>30 min</span></div><div class="form-row"><i data-lucide="split"></i><label>Split across days</label><span>Allowed</span></div><div class="form-row"><i data-lucide="chart-no-axes-combined"></i><label>Distribution</label><span>Use default · even</span></div><div class="options-section-title">Context</div><div class="form-row"><i data-lucide="folder"></i><label>Project</label><span>Harbour launch</span></div><div class="form-row"><i data-lucide="flag"></i><label>Priority</label><span>Important</span></div><div class="form-row"><i data-lucide="palette"></i><label>Colour</label><div class="colour-samples"><button aria-label="Blue" aria-pressed="true" style="background:#007aff"></button><button aria-label="Purple" aria-pressed="false" style="background:#8e68d8"></button><button aria-label="Orange" aria-pressed="false" style="background:#e67817"></button><button aria-label="Green" aria-pressed="false" style="background:#2b9c66"></button></div></div><div class="form-row"><i data-lucide="notebook-pen"></i><label>Notes</label><span>Brief, audience, and approval criteria</span></div></div><footer class="sheet-foot"><button class="text">Back</button><button class="primary">Save options</button></footer></section></div></section>
+
+  <section class="package" data-panel="event-options"><div class="modal-stage"><section class="options-sheet"><header class="sheet-head"><div><h1>Event options</h1><p class="sheet-subtitle">Prototype review</p></div><button class="close" type="button" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="sheet-body"><div class="options-section-title">Repeat</div><div class="form-row"><i data-lucide="repeat-2"></i><label>Frequency</label><span>Does not repeat</span></div><div class="form-row"><i data-lucide="calendar-range"></i><label>Ends</label><span>Not applicable</span></div><div class="form-row"><i data-lucide="clock-3"></i><label>Time</label><span>14:00-16:00</span></div></div><footer class="sheet-foot"><button class="text">Back</button><button class="primary">Save event</button></footer></section></div></section>
+
+  <section class="package" data-panel="reserve"><div class="modal-stage"><section class="sheet"><header class="sheet-head"><div><h1>Reserve time</h1><p class="sheet-subtitle">A one-off block Calico will keep free.</p></div><button class="close" type="button" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="sheet-body"><input class="title-input" value="Lunch" aria-label="Reserved time name"><div class="form-row"><i data-lucide="calendar-days"></i><label>Date</label><span>Wednesday, 20 May</span></div><div class="form-row"><i data-lucide="clock-3"></i><label>Time</label><span>12:00-13:00</span></div><p class="form-note">This block appears in Day and Week. For a repeating commitment, add an event instead.</p></div><footer class="sheet-foot"><button class="text">Cancel</button><button class="primary">Reserve time</button></footer></section></div></section>
+
+  <section class="package" data-panel="conflict"><div class="modal-stage"><section class="choice-sheet"><div class="choice-body"><h1>There isn't enough time on Friday.</h1><p>2.5 hours will not fit before the launch brief is due. Choose how you would like to handle this task.</p><button class="choice"><i data-lucide="arrow-right"></i><span><strong>Move the deadline</strong><small>Give the work more space in the following week.</small></span><b>›</b></button><button class="choice"><i data-lucide="scissors"></i><span><strong>Reduce the estimate</strong><small>Keep the deadline and make the scope fit.</small></span><b>›</b></button><button class="choice"><i data-lucide="split"></i><span><strong>Split the work</strong><small>Use two shorter sessions around fixed time.</small></span><b>›</b></button><button class="choice"><i data-lucide="calendar-clock"></i><span><strong>Choose another time</strong><small>Place the remaining work yourself.</small></span><b>›</b></button><button class="choice"><i data-lucide="calendar-x"></i><span><strong>Defer this task</strong><small>Keep it visible, but remove it from this deadline.</small></span><b>›</b></button><button class="choice"><i data-lucide="triangle-alert"></i><span><strong>Schedule anyway</strong><small>Keep the deadline and knowingly overbook Friday.</small></span><b>›</b></button></div><footer class="sheet-foot"><button class="text">Not now</button><button class="primary">Show my options</button></footer></section></div></section>
+
+  <section class="package" data-panel="task-detail"><div class="detail-stage"><section class="detail-shell"><header class="detail-head"><div><div class="eyebrow">Task</div><h1>Write launch brief</h1></div><button class="close" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="detail-body"><section class="detail-section"><span>Today</span><div class="detail-grid"><div>Scheduled<strong>09:30-11:30</strong></div><div>Plan<strong>2h of 4h</strong></div></div></section><section class="detail-section"><span>Today's progress</span><div class="detail-status"><i data-lucide="circle-dot-dashed" aria-hidden="true"></i><span>1.5h completed. The remaining 30 min will be replanned.</span></div></section><section class="detail-section"><span>Details</span><div class="detail-grid"><div>Project<strong>Harbour launch</strong></div><div>Due<strong>Friday, 22 May</strong></div><div>Priority<strong>Important</strong></div><div>Scheduling<strong>Preferred time</strong></div></div></section><section class="detail-section"><span>Notes</span><p>One clear opening story, delivery timeline, and the decision requested from the team.</p></section></div><footer class="sheet-foot"><button class="text">Close</button><button class="primary">Edit task</button></footer></section></div></section>
+
+  <section class="package" data-panel="block-control"><div class="control-stage"><section class="control-shell"><header class="sheet-head"><div><h1>Place task time</h1><p class="sheet-subtitle">Write launch brief · Tuesday, 19 May</p></div><button class="close" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="control-canvas"><span class="control-time">09:00</span><span class="control-time" style="top:117px">11:00</span><span class="control-time" style="top:225px">13:00</span><div class="drag-ghost">Moving 2h block from 09:30</div><div class="control-block"><strong>Write launch brief</strong><small>2h selected block · fixed time</small></div><div class="drop-slot">Drop here · 13:00-15:00</div><section class="control-popover"><h2>Set time</h2><p>Calico checks your working hours and other blocks before saving.</p><div class="segmented"><button aria-pressed="false">Prefer</button><button aria-pressed="true">Fix time</button></div><div class="field-pair"><div>Starts&nbsp;&nbsp;09:30</div><div>Ends&nbsp;&nbsp;11:30</div></div><div class="validation">This overlaps Prototype review from 10:00-11:00. Choose another time or keep it preferred.</div></section></div><footer class="sheet-foot"><button class="text">Use flexible timing</button><button class="primary">Save time</button></footer></section></div></section>
+
+  <section class="package" data-panel="day-hours"><div class="modal-stage"><section class="sheet"><header class="sheet-head"><div><h1>Working hours</h1><p class="sheet-subtitle">Tuesday, 19 May</p></div><button class="close" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="day-hours-grid"><div><span>Starts</span><strong>09:00</strong></div><div><span>Ends</span><strong>16:00</strong></div><div><span>Task capacity</span><strong>4h</strong></div></div><div class="warning-line">Prototype review and school run leave 4h for tasks. Calico will update the rest of this week's plan when you save.</div><footer class="sheet-foot"><button class="text">Use default hours</button><button class="primary">Save hours</button></footer></section></div></section>
+
+  <section class="package" data-panel="day-allocation"><div class="modal-stage"><section class="sheet"><header class="sheet-head"><div><h1>Adjust task hours</h1><p class="sheet-subtitle">Write launch brief · Tuesday, 19 May</p></div><button class="close" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="allocation-body"><div class="allocation-summary"><span>Scheduled today</span><strong>2h of 4h total</strong></div><div class="allocation-stepper"><span>Hours on Tuesday</span><div class="stepper-controls"><button aria-label="Reduce Tuesday hours">−</button><strong>1.5h</strong><button aria-label="Increase Tuesday hours">+</button></div></div><div class="allocation-list"><span>Other planned days</span><div class="allocation-day"><span>Wednesday, 20 May</span><strong>1h</strong></div><div class="allocation-day"><span>Thursday, 21 May</span><strong>1.5h</strong></div></div><p class="allocation-note">The 30 min released from Tuesday will be returned to automatic scheduling. Fixed blocks stay where they are.</p></div><footer class="sheet-foot"><button class="text">Use automatic scheduling</button><button class="primary">Save adjustment</button></footer></section></div></section>
+
+  <section class="package" data-panel="project-management"><div class="app"><header class="toolbar"><span class="traffic" aria-hidden="true"><b></b><b></b><b></b></span><span class="brand">Calico</span><span class="period">Projects</span><button class="icon-button" type="button" aria-label="Add project"><i data-lucide="plus" aria-hidden="true"></i></button></header><div class="shell"><aside class="sidebar"><div class="sidebar-label">Plan</div><nav><button><i data-lucide="sun-medium" aria-hidden="true"></i>Today</button><button><i data-lucide="calendar-days" aria-hidden="true"></i>Week</button><button><i data-lucide="list-todo" aria-hidden="true"></i>Agenda</button><button><i data-lucide="triangle-alert" aria-hidden="true"></i>Review</button><button aria-pressed="true"><i data-lucide="settings-2" aria-hidden="true"></i>Settings</button></nav><div class="projects"><div class="sidebar-label">Projects</div><nav><button><span class="dot" style="background:#007aff"></span>Personal</button><button><span class="dot" style="background:#8e68d8"></span>Harbour launch</button><button><span class="dot" style="background:#e67817"></span>Studio</button></nav></div></aside><main class="content"><div class="main-page"><div class="page-head"><div><p style="margin:0 0 5px"><button class="text">Settings</button></p><h1>Projects</h1><p>Keep related tasks together without changing their schedule.</p></div><button class="secondary"><i data-lucide="plus" aria-hidden="true"></i> Add project</button></div><div class="project-editor"><div class="project-editor-head"><h2>Your projects</h2><span class="setting-value">3 projects</span></div><div class="project-row"><b class="project-swatch" style="background:#007aff"></b><div class="project-copy"><strong>Personal</strong><small>5 tasks</small></div><button class="project-action">Rename</button><button class="project-action">Archive</button></div><div class="project-row"><b class="project-swatch" style="background:#8e68d8"></b><div class="project-copy"><strong>Harbour launch</strong><small>6 tasks</small></div><button class="project-action">Rename</button><button class="project-action">Archive</button></div><div class="project-row"><b class="project-swatch" style="background:#e67817"></b><div class="project-copy"><strong>Studio</strong><small>2 tasks</small></div><button class="project-action">Rename</button><button class="project-action">Archive</button></div><div class="project-editor-head"><h2>New project</h2></div><div class="project-new"><b class="project-swatch" style="background:#2b9c66"></b><input value="Client work" aria-label="Project name"><div class="colour-picker"><button aria-pressed="false" style="background:#007aff"></button><button aria-pressed="false" style="background:#8e68d8"></button><button aria-pressed="false" style="background:#e67817"></button><button aria-pressed="true" style="background:#2b9c66"></button></div></div></div></div></main></div></div></section>
+
+  <section class="package" data-panel="search-feedback"><div class="feedback-stage"><section class="feedback-shell"><h1>Find anything in your plan</h1><div class="search-tabs"><button data-search-tab="results" aria-pressed="true">Results</button><button data-search-tab="empty" aria-pressed="false">No matches</button><button data-search-tab="feedback" aria-pressed="false">Feedback</button></div><div class="search-state is-active" data-search-state="results"><div class="search-field"><i data-lucide="search" aria-hidden="true"></i><input value="launch" aria-label="Search tasks and events"></div><div class="search-results"><div class="search-result"><i data-lucide="check-square" aria-hidden="true"></i><span><strong>Write launch brief</strong><small>Task · Tuesday 09:30 · Harbour launch</small></span><i data-lucide="arrow-up-right" aria-hidden="true"></i></div><div class="search-result"><i data-lucide="calendar" aria-hidden="true"></i><span><strong>Launch review</strong><small>Event · Friday 14:00</small></span><i data-lucide="arrow-up-right" aria-hidden="true"></i></div></div></div><div class="search-state" data-search-state="empty"><div class="search-field"><i data-lucide="search" aria-hidden="true"></i><input value="forecast" aria-label="Search tasks and events"></div><div class="search-empty"><div><i data-lucide="search-x" aria-hidden="true"></i><strong>No matches for “forecast”</strong><span>Try a task, event, project, or note.</span></div></div></div><div class="search-state" data-search-state="feedback"><div class="feedback-row success"><i data-lucide="circle-check" aria-hidden="true"></i>Backup imported. Your current plan has been replaced.</div><div class="undo-toast">Task moved to Thursday.<button>Undo</button></div></div></section></div></section>
+
+  <section class="package" data-panel="data-safety"><div class="safety-stage"><section class="safety-sheet"><header class="sheet-head"><div><h1>Review imported plan</h1><p class="sheet-subtitle">Calico backup · 19 May, 10:42</p></div><button class="close" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="safety-body"><p>This will replace the schedule on this device. Your account connection stays as it is.</p><div class="safety-compare"><div><span>Tasks</span><strong>12 → 18</strong></div><div><span>Events and availability</span><strong>4 → 6</strong></div><div><span>Projects</span><strong>3 → 4</strong></div><div><span>Account connection</span><strong>Unchanged</strong></div></div><div class="danger-note">A reset is permanent: it removes tasks, events, projects, and planning history from this device.</div></div><footer class="sheet-foot"><button class="text">Cancel import</button><button class="primary">Replace this plan</button></footer></section></div></section>
+
+  <section class="package" data-panel="confirm-delete"><div class="modal-stage"><section class="options-sheet"><header class="sheet-head"><div><h1>Confirm change</h1><p class="sheet-subtitle">This action cannot be undone.</p></div><button class="close" aria-label="Close"><i data-lucide="x" aria-hidden="true"></i></button></header><div class="confirm-tabs"><button data-confirm-tab="task" aria-pressed="true">Delete task</button><button data-confirm-tab="project" aria-pressed="false">Delete project</button><button data-confirm-tab="reset" aria-pressed="false">Reset Calico</button></div><div class="confirm-state is-active" data-confirm-state="task"><h2>Delete Write launch brief?</h2><p>This deletes the task and every planned block for it. Completed history stays in your records.</p></div><div class="confirm-state" data-confirm-state="project"><h2>Delete Harbour launch?</h2><p>Its 6 tasks will remain in Calico without a project. Their schedule will not change.</p></div><div class="confirm-state" data-confirm-state="reset"><h2>Reset all Calico data?</h2><p>This removes 12 tasks, 4 events, 3 projects, and planning history from this device.</p><div class="danger-note">Your account connection stays, but this device will begin with an empty plan.</div></div><footer class="sheet-foot"><button class="text">Cancel</button><button class="danger-primary" data-confirm-action>Delete task</button></footer></section></div></section>
+
+  <section class="package" data-panel="account"><div class="account-wrap"><div><div class="item-tabs" style="display:flex;justify-content:center;margin:0 auto 14px;width:max-content"><button data-account-tab="email" aria-pressed="true">Email sign-in</button><button data-account-tab="sync" aria-pressed="false">First sync</button></div><section class="account-state is-active" data-account="email"><div class="account-sheet"><div class="account-body"><div class="account-mark"><i data-lucide="mail"></i></div><h1>Keep your plan with you.</h1><p>Enter your email and Calico will send a secure sign-in link. No password to remember.</p><input class="email" type="email" value="emma@calico.app" aria-label="Email address"><button class="primary" style="width:100%">Email me a sign-in link</button><p style="margin:16px 0 0;font-size:12px">Check your inbox to continue. This link expires shortly.</p></div><footer class="sheet-foot"><button class="text">Not now</button><span class="setting-value">Private by default</span></footer></div></section><section class="account-state" data-account="sync"><div class="account-sheet"><div class="account-body"><div class="account-mark"><i data-lucide="refresh-cw"></i></div><h1>Choose the plan to keep.</h1><p>There is already a plan saved to this account. Nothing changes until you choose.</p><button class="merge-option" aria-pressed="true"><strong>Keep this device's plan</strong><small>Replace the saved plan with this device's current version.</small></button><button class="merge-option" aria-pressed="false"><strong>Use the account's plan</strong><small>Replace this device with the plan last saved online.</small></button></div><footer class="sheet-foot"><button class="text">Cancel</button><button class="primary">Continue</button></footer></div></section></div></div></section>
+
+  <section class="package" data-panel="sync-status"><div class="account-wrap"><section class="account-sheet"><div class="account-body"><div class="account-mark"><i data-lucide="cloud-off"></i></div><h1>Sync needs attention.</h1><p>Calico could not safely save your latest local changes because this plan was changed somewhere else.</p><div class="sync-state"><i data-lucide="shield-alert" aria-hidden="true"></i><span>Your plan on this device is still intact. Choose which version to keep before syncing again.</span></div><button class="merge-option" aria-pressed="true"><strong>Review both plans</strong><small>See the task and event differences before deciding.</small></button><button class="merge-option" aria-pressed="false"><strong>Keep working offline</strong><small>Do not make any account changes yet.</small></button></div><footer class="sheet-foot"><button class="text">Sign out</button><button class="primary">Resolve sync</button></footer></section></div></section>
+
+  <section class="package" data-panel="welcome"><div class="welcome-window"><header class="welcome-bar"><span class="traffic" aria-hidden="true"><b></b><b></b><b></b></span><strong>Calico</strong><button class="text" data-welcome="signin">Sign in</button></header><section class="welcome-state is-active" data-welcome-page="landing"><div class="landing"><div class="landing-copy"><h1>Make room for what matters.</h1><p>Calico shapes a realistic week around your time, energy, and the things life has already claimed.</p><button class="primary" data-welcome="setup">Set up Calico</button><small>Local-first, private by default.</small></div><div class="landing-preview"><h2>Your week</h2><div class="mini-grid" style="height:330px"><div></div><div class="mini-head">MON<strong>18</strong></div><div class="mini-head">TUE<strong>19</strong></div><div class="mini-head">WED<strong>20</strong></div><div class="mini-head">THU<strong>21</strong></div><div class="mini-time">09:00</div><div class="mini-cell"><div class="block task-blue" style="top:64px;height:72px"><strong>Launch brief</strong><small>Task · 2h</small></div></div><div class="mini-cell"><div class="block availability" style="top:4px;height:48px"><strong>School run</strong></div><div class="block event" style="top:170px;height:76px"><strong>Review</strong><small>Event · 14:00</small></div></div><div class="mini-cell"></div><div class="mini-cell"><div class="block task-orange" style="top:114px;height:60px"><strong>Notes</strong><small>Task · 1h</small></div></div></div></div></div></section><section class="welcome-state" data-welcome-page="signin"><div class="welcome-wrap"><section class="setup-sheet"><div class="setup-body"><div class="account-mark"><i data-lucide="mail"></i></div><div class="setup"><h1>Welcome back.</h1><p>Enter your email and we will send a secure sign-in link.</p><input class="email" type="email" placeholder="you@example.com"><button class="primary" style="width:100%">Email me a sign-in link</button></div></div><footer class="setup-actions"><button data-welcome="landing">Back</button><span class="setting-value">No password needed</span></footer></section></div></section><section class="welcome-state" data-welcome-page="setup"><div class="welcome-wrap"><section class="setup-sheet"><div class="setup-progress"><b class="is-done"></b><b></b><b></b><b></b></div><div class="setup-body"><div class="setup-step is-active" data-setup="hours"><div class="setup"><h1>When can Calico plan?</h1><p>Start with the hours that are usually available. You can adjust any individual day later.</p><div class="setup-row"><label>Start time</label><input type="time" value="09:00"></div><div class="setup-row"><label>Finish time</label><input type="time" value="17:00"></div></div></div><div class="setup-step" data-setup="energy"><div class="setup"><h1>What is a good day?</h1><p>Choose a baseline that feels sustainable, not aspirational.</p><div class="intensity"><button data-energy="5" aria-pressed="false"><strong>5</strong>Gentle</button><button data-energy="7" aria-pressed="true"><strong>7</strong>Balanced</button><button data-energy="9" aria-pressed="false"><strong>9</strong>Full</button></div></div></div><div class="setup-step" data-setup="distribution"><div class="setup"><h1>How should work be spread?</h1><p>This is the default for new tasks. You can override it whenever a task needs a different shape.</p><div class="distribution-grid"><button data-distribution="even" aria-pressed="true"><strong>Even</strong>Keep each day similar.</button><button data-distribution="front" aria-pressed="false"><strong>Front-loaded</strong>Do more earlier.</button><button data-distribution="back" aria-pressed="false"><strong>Back-loaded</strong>Build toward the deadline.</button><button data-distribution="free" aria-pressed="false"><strong>By free time</strong>Use lighter days first.</button></div></div></div><div class="setup-step" data-setup="account"><div class="setup"><h1>Keep your plan with you.</h1><p>Sign in by email to make this schedule available across your devices.</p><input class="email" type="email" placeholder="you@example.com"><p style="margin-bottom:0">You can sign in later from Settings.</p></div></div></div><footer class="setup-actions"><button data-setup-back>Back</button><button data-setup-next>Continue</button></footer></section></div></section></div></section>
+
+  <script>
+    (() => {
+      const root = document.getElementById('calico-design-package');
+      const all = selector => root.querySelectorAll(selector);
+      const show = (buttons, panels, buttonData, panelData, value) => {
+        buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset[buttonData] === value)));
+        panels.forEach(panel => panel.classList.toggle('is-active', panel.dataset[panelData] === value));
+      };
+      const packageButtons = all('[data-package]');
+      const packages = all('[data-panel]');
+      packageButtons.forEach(button => button.addEventListener('click', () => { show(packageButtons, packages, 'package', 'panel', button.dataset.package); if (button.dataset.confirmTarget) root.querySelector(`[data-confirm-tab="${button.dataset.confirmTarget}"]`).click(); }));
+      all('.close').forEach(button => button.addEventListener('click', () => show(packageButtons, packages, 'package', 'panel', 'planner')));
+      const pageButtons = all('[data-page-button]');
+      const pages = all('[data-page]');
+      pageButtons.forEach(button => button.addEventListener('click', () => show(pageButtons, pages, 'pageButton', 'page', button.dataset.pageButton)));
+      const itemButtons = all('[data-item-type]');
+      const itemForms = all('[data-item]');
+      const itemTitle = root.querySelector('#new-item-title');
+      const itemSave = root.querySelector('#new-item-save');
+      itemButtons.forEach(button => button.addEventListener('click', () => { const type = button.dataset.itemType; show(itemButtons, itemForms, 'itemType', 'item', type); itemTitle.textContent = type === 'event' ? 'New event' : 'New task'; itemSave.textContent = type === 'event' ? 'Add event' : 'Add task'; }));
+      const searchTabs = all('[data-search-tab]');
+      const searchStates = all('[data-search-state]');
+      searchTabs.forEach(button => button.addEventListener('click', () => show(searchTabs, searchStates, 'searchTab', 'searchState', button.dataset.searchTab)));
+      const confirmTabs = all('[data-confirm-tab]');
+      const confirmStates = all('[data-confirm-state]');
+      const confirmAction = root.querySelector('[data-confirm-action]');
+      confirmTabs.forEach(button => button.addEventListener('click', () => { const state = button.dataset.confirmTab; show(confirmTabs, confirmStates, 'confirmTab', 'confirmState', state); confirmAction.textContent = state === 'reset' ? 'Reset Calico' : state === 'project' ? 'Delete project' : 'Delete task'; }));
+      const accountButtons = all('[data-account-tab]');
+      const accountStates = all('[data-account]');
+      accountButtons.forEach(button => button.addEventListener('click', () => show(accountButtons, accountStates, 'accountTab', 'account', button.dataset.accountTab)));
+      const welcomeButtons = all('[data-welcome]');
+      const welcomeStates = all('[data-welcome-page]');
+      welcomeButtons.forEach(button => button.addEventListener('click', () => welcomeStates.forEach(state => state.classList.toggle('is-active', state.dataset.welcomePage === button.dataset.welcome))));
+      const setupNames = ['hours', 'energy', 'distribution', 'account'];
+      let setupIndex = 0;
+      const setupSteps = all('[data-setup]');
+      const setupBack = root.querySelector('[data-setup-back]');
+      const setupNext = root.querySelector('[data-setup-next]');
+      const showSetup = index => { setupIndex = Math.max(0, Math.min(setupNames.length - 1, index)); setupSteps.forEach(step => step.classList.toggle('is-active', step.dataset.setup === setupNames[setupIndex])); setupBack.style.visibility = setupIndex ? 'visible' : 'hidden'; setupNext.textContent = setupIndex === setupNames.length - 1 ? 'Finish setup' : 'Continue'; all('.setup-progress b').forEach((bar, i) => bar.classList.toggle('is-done', i <= setupIndex)); };
+      setupNext.addEventListener('click', () => showSetup(setupIndex === setupNames.length - 1 ? 0 : setupIndex + 1));
+      setupBack.addEventListener('click', () => showSetup(setupIndex - 1));
+      const energy = all('[data-energy]');
+      energy.forEach(button => button.addEventListener('click', () => energy.forEach(other => other.setAttribute('aria-pressed', String(other === button)))));
+      const distributions = all('[data-distribution]');
+      distributions.forEach(button => button.addEventListener('click', () => distributions.forEach(other => other.setAttribute('aria-pressed', String(other === button)))));
+      showSetup(0);
+    })();
+  </script>
+</div>
+<script>
+  window.addEventListener('DOMContentLoaded', () => window.lucide?.createIcons());
+</script>
+</body>
+</html>
