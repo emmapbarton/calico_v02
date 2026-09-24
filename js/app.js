@@ -233,15 +233,17 @@ function bindProjectPage(root) {
   const back = page.querySelector('[data-page-button="settings"]');
   const headerAction = page.querySelector('.page-head > .secondary');
   const projectHeads = page.querySelectorAll('.project-editor-head');
-  const newProjectHeading = projectHeads[projectHeads.length - 1]?.querySelector('h2');
+  const newProjectSection = projectHeads[projectHeads.length - 1];
+  const newProjectHeading = newProjectSection?.querySelector('h2');
   if (!back || !newProjectHeading) return;
 
   back.className = 'project-back';
   back.setAttribute('aria-label', 'Back to Settings');
-  back.innerHTML = '<i data-lucide="arrow-left" aria-hidden="true"></i>';
+  back.innerHTML = '<i data-lucide="chevron-left" aria-hidden="true"></i>';
   back.parentElement.replaceWith(back);
   headerAction?.remove();
-  newProjectHeading.outerHTML = '<button class="new-project-trigger" type="button"><i data-lucide="plus" aria-hidden="true"></i>New project</button>';
+  newProjectSection.remove();
+  page.querySelector('.page-head').insertAdjacentHTML('beforeend', '<button class="secondary project-add" type="button"><i data-lucide="plus" aria-hidden="true"></i> New project</button>');
   window.lucide?.createIcons();
 }
 

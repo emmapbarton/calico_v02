@@ -193,10 +193,10 @@
     #calico-design-package .project-editor { max-width: 720px; }
     #calico-design-package .page[data-page="projects"] .project-editor { width: 100%; max-width: none; }
     #calico-design-package .page[data-page="projects"] .project-row { min-height: 72px; }
-    #calico-design-package .project-back { width: 28px; height: 28px; display: grid; place-items: center; margin: 0 0 9px; border: 0; border-radius: 50%; padding: 0; background: #f2f2f7; color: #007aff; }
-    #calico-design-package .project-back i { width: 16px; height: 16px; }
-    #calico-design-package .new-project-trigger { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; border: 0; padding: 0; background: transparent; color: #1d1d1f; font-size: 15px; font-weight: 650; }
-    #calico-design-package .new-project-trigger i { width: 17px; height: 17px; color: #007aff; }
+    #calico-design-package .project-back { width: 20px; height: 20px; display: grid; place-items: center; margin: 0 0 10px; border: 0; padding: 0; background: transparent; color: #6e6e73; }
+    #calico-design-package .project-back i { width: 15px; height: 15px; }
+    #calico-design-package .page[data-page="projects"] .page-head { align-items: flex-end; }
+    #calico-design-package .page[data-page="projects"] .project-add { margin-bottom: 0; }
     #calico-design-package .project-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 23px 0 8px; }
     #calico-design-package .project-editor-head h2 { margin: 0; font-size: 15px; }
     #calico-design-package .project-row { min-height: 58px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #e5e5ea; padding: 10px 0; }
