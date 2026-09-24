@@ -197,9 +197,10 @@
     #calico-design-package .project-back i { width: 15px; height: 15px; }
     #calico-design-package .page[data-page="projects"] .page-head { align-items: flex-end; }
     #calico-design-package .page[data-page="projects"] .project-add,
-    #calico-design-package .secondary[data-package="reserve"] { display: inline-flex; align-items: center; gap: 5px; margin-bottom: 0; line-height: 1; }
+    #calico-design-package .secondary[data-package="reserve"] { display: inline-flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 0; line-height: 1; }
     #calico-design-package .page[data-page="projects"] .project-add svg,
     #calico-design-package .secondary[data-package="reserve"] svg { width: 14px; height: 14px; }
+    #calico-design-package .page[data-page="week"] .page-head > .secondary[data-package="reserve"] { align-self: flex-start; }
     #calico-design-package .project-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 23px 0 8px; }
     #calico-design-package .project-editor-head h2 { margin: 0; font-size: 15px; }
     #calico-design-package .project-row { min-height: 58px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #e5e5ea; padding: 10px 0; }
