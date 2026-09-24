@@ -1,0 +1,8 @@
+{
+  "name": "calico-v02",
+  "private": true,
+  "scripts": {
+    "test:core": "node --test tests/state.test.mjs",
+    "check:syntax": "node --check js/state.js && node --check js/app.js && node --check js/navigation.js && node --check js/overlays.js && node --check js/agenda.js && node --check js/search.js"
+  }
+}

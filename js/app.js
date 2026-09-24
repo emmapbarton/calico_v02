@@ -251,6 +251,7 @@ function bindProjectPage(root) {
 function boot() {
   const { bindAgenda, bindOverlays, bindSearch, createNavigation, fixture } = window.Calico;
   const root = document.getElementById('calico-design-package');
+  window.Calico.store = window.Calico.state.createStore();
   const navigation = createNavigation(root, fixture);
   bindOverlays(root, navigation);
   bindAgenda(root, navigation);
