@@ -13,6 +13,19 @@ window.Calico.createNavigation = function createNavigation(root, fixture) {
   const period = root.querySelector('.package[data-panel="planner"] .period');
   let activeOverlay = null;
 
+  const resetNewItem = () => {
+    const panel = root.querySelector('[data-panel="new-item"]');
+    if (!panel) return;
+    panel.classList.remove('is-showing-event-options');
+    panel.querySelector('.item-tabs').hidden = false;
+    panel.querySelector('.in-place-event-options')?.setAttribute('hidden', '');
+    panel.querySelectorAll('[data-item-type]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.itemType === 'task')));
+    panel.querySelector('[data-item="task"]').classList.add('is-active');
+    panel.querySelector('[data-item="event"]').classList.remove('is-active');
+    panel.querySelector('#new-item-title').textContent = 'New task';
+    panel.querySelector('.sheet-foot').innerHTML = '<button class="primary" id="new-item-save">Add task</button>';
+  };
+
   const updatePeriod = page => {
     const rangePages = new Set(['week', 'agenda', 'review']);
     if (page === 'day') {
@@ -48,6 +61,7 @@ window.Calico.createNavigation = function createNavigation(root, fixture) {
   };
 
   packageButtons.forEach(button => button.addEventListener('click', () => {
+    if (button.dataset.package === 'new-item') resetNewItem();
     openPanel(button.dataset.package);
     if (button.dataset.confirmTarget) root.querySelector(`[data-confirm-tab="${button.dataset.confirmTarget}"]`)?.click();
   }));

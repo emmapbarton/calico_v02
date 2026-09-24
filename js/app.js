@@ -96,13 +96,14 @@ function bindInPlaceEventOptions(root) {
   eventForm.insertAdjacentHTML('afterend', `
     <div class="in-place-event-options" hidden>
       <div class="options-section-title">Repeat</div>
-      <button class="form-row" type="button" data-open-event-repeat><i data-lucide="repeat-2"></i><label>Frequency</label><span>Does not repeat</span></button>
+      <button class="form-row" type="button" data-open-event-repeat><i data-lucide="repeat-2"></i><label>Frequency</label><span>Does not repeat</span><i class="event-option-chevron" data-lucide="chevron-right"></i></button>
       <div class="form-row"><i data-lucide="calendar-range"></i><label>Ends</label><span>Not applicable</span></div>
       <div class="form-row"><i data-lucide="clock-3"></i><label>Time</label><span>14:00-16:00</span></div>
     </div>`);
 
   const options = newItem.querySelector('.in-place-event-options');
   const showEventForm = () => {
+    newItem.classList.remove('is-showing-event-options');
     title.textContent = 'New event';
     tabs.hidden = false;
     taskForm.classList.remove('is-active');
@@ -112,6 +113,7 @@ function bindInPlaceEventOptions(root) {
     window.lucide?.createIcons();
   };
   const showOptions = () => {
+    newItem.classList.add('is-showing-event-options');
     title.textContent = 'Event options';
     tabs.hidden = true;
     eventForm.classList.remove('is-active');
