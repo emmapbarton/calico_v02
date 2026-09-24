@@ -243,6 +243,7 @@ function bindProjectPage(root) {
   back.parentElement.replaceWith(back);
   headerAction?.remove();
   newProjectSection.remove();
+  page.querySelector('.project-new')?.remove();
   page.querySelector('.page-head').insertAdjacentHTML('beforeend', '<button class="secondary project-add" type="button"><i data-lucide="plus" aria-hidden="true"></i> New project</button>');
   window.lucide?.createIcons();
 }
