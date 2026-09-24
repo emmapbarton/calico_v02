@@ -59,6 +59,15 @@ window.Calico = window.Calico || {};
     const endHours = timeToHours(end);
     return Number.isFinite(startHours) && Number.isFinite(endHours) && endHours > startHours;
   };
+  const dayTimestamp = date => {
+    if (!isIsoDate(date)) return Number.NaN;
+    const [year, month, day] = date.split('-').map(Number);
+    const timestamp = Date.UTC(year, month - 1, day);
+    const roundTrip = new Date(timestamp);
+    return roundTrip.getUTCFullYear() === year && roundTrip.getUTCMonth() === month - 1 && roundTrip.getUTCDate() === day
+      ? timestamp : Number.NaN;
+  };
+  const dayOfWeek = date => Number.isFinite(dayTimestamp(date)) ? new Date(dayTimestamp(date)).getUTCDay() : Number.NaN;
   const workingHoursSettings = (dayStart, dayEnd, maxDailyHours, minBlockHours) => {
     if (!eventTimeRangeIsValid(dayStart, dayEnd)) return null;
     return {
@@ -211,6 +220,82 @@ window.Calico = window.Calico || {};
     return { ok: true, value };
   }
 
+  function validateEvent(input, existingId) {
+    const name = String(input?.name || '').trim();
+    const date = String(input?.date || '');
+    const start = String(input?.start || '');
+    const end = String(input?.end || '');
+    if (!name) return { ok: false, error: 'Event name cannot be empty.' };
+    if (!isIsoDate(date) || !Number.isFinite(dayTimestamp(date))) return { ok: false, error: 'A valid event date is required.' };
+    if (!eventTimeRangeIsValid(start, end)) return { ok: false, error: 'Event end must be later than its start.' };
+    const repeat = REPEATS.has(input?.repeat) ? input.repeat : 'none';
+    const repeatDays = Array.isArray(input?.repeatDays) ? [...new Set(input.repeatDays.map(Number).filter(day => Number.isInteger(day) && day >= 0 && day <= 6))] : [];
+    const value = {
+      id: existingId || createId(),
+      type: 'event',
+      kind: input?.kind === 'availability' ? 'availability' : 'event',
+      name: name.slice(0, 120),
+      priority: PRIORITIES.has(input?.priority) ? input.priority : 'mandatory',
+      color: safeColor(input?.color, '#8e68d8'),
+      date,
+      start,
+      end,
+      repeat,
+    };
+    if (repeat !== 'none') {
+      value.repeatEndType = input?.repeatEndType === 'date' ? 'date' : 'count';
+      if (value.repeatEndType === 'date') {
+        if (!isIsoDate(input?.repeatEndDate) || !Number.isFinite(dayTimestamp(input.repeatEndDate)) || input.repeatEndDate < date) {
+          return { ok: false, error: 'Repeat end date must be on or after the first occurrence.' };
+        }
+        value.repeatEndDate = input.repeatEndDate;
+      } else value.repeatCount = Math.max(1, Math.trunc(finiteNumber(input?.repeatCount, 10, 1, 10000)));
+      if (repeat === 'custom') {
+        if (!repeatDays.length) return { ok: false, error: 'Choose at least one repeat day.' };
+        value.repeatDays = repeatDays;
+      }
+      if (repeat === 'interval') value.repeatInterval = Math.max(1, Math.trunc(finiteNumber(input?.repeatInterval, 7, 1, 3650)));
+    }
+    return { ok: true, value };
+  }
+
+  function eventOccursOn(event, date) {
+    if (!event || !isIsoDate(date) || !Number.isFinite(dayTimestamp(date)) || !isIsoDate(event.date) || !Number.isFinite(dayTimestamp(event.date))) return false;
+    if (!event.repeat || event.repeat === 'none') return event.date === date;
+    if (date < event.date) return false;
+    if (event.repeatEndType === 'date' && event.repeatEndDate && date > event.repeatEndDate) return false;
+    if (date === event.date) return true;
+    const targetDay = dayOfWeek(date);
+    const startDay = dayOfWeek(event.date);
+    if (event.repeat === 'daily') return true;
+    if (event.repeat === 'weekly') return targetDay === startDay;
+    if (event.repeat === 'weekdays') return targetDay >= 1 && targetDay <= 5;
+    if (event.repeat === 'weekends') return targetDay === 0 || targetDay === 6;
+    if (event.repeat === 'custom') return (event.repeatDays || []).includes(targetDay);
+    if (event.repeat === 'interval') {
+      const interval = Math.max(1, Number(event.repeatInterval) || 7);
+      return Math.round((dayTimestamp(date) - dayTimestamp(event.date)) / 86400000) % interval === 0;
+    }
+    return false;
+  }
+
+  function occurrenceCountBefore(event, date) {
+    if (!event?.repeat || event.repeat === 'none' || !Number.isFinite(dayTimestamp(event.date)) || !Number.isFinite(dayTimestamp(date))) return 0;
+    let count = 0;
+    for (let timestamp = dayTimestamp(event.date); timestamp < dayTimestamp(date); timestamp += 86400000) {
+      if (eventOccursOn(event, new Date(timestamp).toISOString().slice(0, 10))) count += 1;
+    }
+    return count;
+  }
+
+  function eventsOnDate(events, date) {
+    return (Array.isArray(events) ? events : []).filter(event => (
+      eventTimeRangeIsValid(event?.start, event?.end)
+      && eventOccursOn(event, date)
+      && (event.repeatEndType !== 'count' || !event.repeatCount || occurrenceCountBefore(event, date) < event.repeatCount)
+    ));
+  }
+
   function createStore({ storage = globalThis.localStorage, key = STORAGE_KEY } = {}) {
     const listeners = new Set();
     let recoveryMessage = '';
@@ -305,8 +390,27 @@ window.Calico = window.Calico || {};
         commit({ ...state, tasks: state.tasks.filter(task => task.id !== id), manualOverrides });
         return { ok: true };
       },
+      createEvent(input) {
+        const result = validateEvent(input);
+        if (!result.ok) return result;
+        commit({ ...state, events: [...state.events, result.value] });
+        return { ok: true, value: clone(result.value) };
+      },
+      updateEvent(id, input) {
+        const existing = state.events.find(event => event.id === id);
+        if (!existing) return { ok: false, error: 'Event not found.' };
+        const result = validateEvent({ ...existing, ...input }, id);
+        if (!result.ok) return result;
+        commit({ ...state, events: state.events.map(event => event.id === id ? result.value : event) });
+        return { ok: true, value: clone(result.value) };
+      },
+      deleteEvent(id) {
+        if (!state.events.some(event => event.id === id)) return { ok: false, error: 'Event not found.' };
+        commit({ ...state, events: state.events.filter(event => event.id !== id) });
+        return { ok: true };
+      },
     };
   }
 
-  window.Calico.state = { DEFAULT_STATE, STORAGE_KEY, normalizeState, validateProject, validateTask, createStore, eventTimeRangeIsValid, workingHoursSettings };
+  window.Calico.state = { DEFAULT_STATE, STORAGE_KEY, normalizeState, validateProject, validateTask, validateEvent, createStore, eventTimeRangeIsValid, eventOccursOn, eventsOnDate, workingHoursSettings };
 })();

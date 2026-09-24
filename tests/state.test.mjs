@@ -97,6 +97,42 @@ test('partial project and task updates preserve the fields not being changed', (
   assert.equal(updated.value.hours, 3);
 });
 
+test('event validation rejects invalid scheduling inputs and preserves availability fields', () => {
+  assert.equal(domain.validateEvent({ name: 'School run', date: '2026-09-25', start: '09:00', end: '08:00' }).ok, false);
+  assert.equal(domain.validateEvent({ name: 'School run', date: '2026-02-30', start: '08:00', end: '09:00' }).ok, false);
+  assert.equal(domain.validateEvent({ name: 'School run', date: '2026-09-25', start: '08:00', end: '09:00', repeat: 'custom', repeatDays: [] }).ok, false);
+  const event = domain.validateEvent({ name: 'School run', kind: 'availability', date: '2026-09-21', start: '08:00', end: '09:00', repeat: 'weekdays', repeatEndType: 'count', repeatCount: 5 });
+  assert.equal(event.ok, true);
+  assert.equal(event.value.kind, 'availability');
+  assert.equal(event.value.repeatCount, 5);
+});
+
+test('event occurrences respect recurrence rules and count limits', () => {
+  const weekdays = { id: 'school-run', date: '2026-09-21', start: '08:00', end: '09:00', repeat: 'weekdays', repeatEndType: 'count', repeatCount: 2 };
+  assert.equal(domain.eventOccursOn(weekdays, '2026-09-21'), true);
+  assert.equal(domain.eventOccursOn(weekdays, '2026-09-22'), true);
+  assert.equal(domain.eventOccursOn(weekdays, '2026-09-26'), false);
+  assert.equal(domain.eventsOnDate([weekdays], '2026-09-21').length, 1);
+  assert.equal(domain.eventsOnDate([weekdays], '2026-09-22').length, 1);
+  assert.equal(domain.eventsOnDate([weekdays], '2026-09-23').length, 0);
+  const interval = { id: 'focus', date: '2026-09-21', start: '10:00', end: '11:00', repeat: 'interval', repeatInterval: 3 };
+  assert.equal(domain.eventOccursOn(interval, '2026-09-24'), true);
+  assert.equal(domain.eventOccursOn(interval, '2026-09-25'), false);
+});
+
+test('event operations persist, update without losing fields, and delete cleanly', () => {
+  const store = domain.createStore({ storage: memoryStorage() });
+  const event = store.createEvent({ name: 'Prototype review', date: '2026-09-25', start: '14:00', end: '16:00', color: '#8e68d8' });
+  assert.equal(event.ok, true);
+  const updated = store.updateEvent(event.value.id, { end: '16:30' });
+  assert.equal(updated.ok, true);
+  assert.equal(updated.value.name, 'Prototype review');
+  assert.equal(updated.value.start, '14:00');
+  assert.equal(updated.value.end, '16:30');
+  assert.equal(store.deleteEvent(event.value.id).ok, true);
+  assert.equal(store.getState().events.length, 0);
+});
+
 test('a local persistence failure keeps the in-memory change available', () => {
   const storage = { getItem: () => null, setItem: () => { throw new Error('quota'); } };
   const store = domain.createStore({ storage });
