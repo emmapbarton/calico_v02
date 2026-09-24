@@ -191,6 +191,12 @@
     #calico-design-package .distribution-grid strong { display: block; margin-bottom: 4px; font-size: 13px; }
     #calico-design-package .filter-row .filter-reset { border-color: transparent; background: transparent; color: #007aff; }
     #calico-design-package .project-editor { max-width: 720px; }
+    #calico-design-package .page[data-page="projects"] .project-editor { width: 100%; max-width: none; }
+    #calico-design-package .page[data-page="projects"] .project-row { min-height: 72px; }
+    #calico-design-package .project-back { width: 28px; height: 28px; display: grid; place-items: center; margin: 0 0 9px; border: 0; border-radius: 50%; padding: 0; background: #f2f2f7; color: #007aff; }
+    #calico-design-package .project-back i { width: 16px; height: 16px; }
+    #calico-design-package .new-project-trigger { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; border: 0; padding: 0; background: transparent; color: #1d1d1f; font-size: 15px; font-weight: 650; }
+    #calico-design-package .new-project-trigger i { width: 17px; height: 17px; color: #007aff; }
     #calico-design-package .project-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 23px 0 8px; }
     #calico-design-package .project-editor-head h2 { margin: 0; font-size: 15px; }
     #calico-design-package .project-row { min-height: 58px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #e5e5ea; padding: 10px 0; }
@@ -272,27 +278,38 @@
     #calico-design-package .package[data-panel="day-allocation"].is-active,
     #calico-design-package .package[data-panel="conflict"].is-active,
     #calico-design-package .package[data-panel="task-detail"].is-active,
-    #calico-design-package .package[data-panel="search-feedback"].is-active { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    #calico-design-package .package[data-panel="search-feedback"].is-active,
+    #calico-design-package .package[data-panel="data-safety"].is-active,
+    #calico-design-package .package[data-panel="confirm-delete"].is-active { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; pointer-events: none; }
     #calico-design-package .package[data-panel="new-item"] .modal-stage,
     #calico-design-package .package[data-panel="reserve"] .modal-stage,
     #calico-design-package .package[data-panel="day-hours"] .modal-stage,
     #calico-design-package .package[data-panel="day-allocation"] .modal-stage,
     #calico-design-package .package[data-panel="conflict"] .modal-stage,
     #calico-design-package .package[data-panel="task-detail"] .detail-stage,
-    #calico-design-package .package[data-panel="search-feedback"] .feedback-stage { width: 100%; min-height: 100%; display: grid; place-items: center; padding: 28px; background: transparent; pointer-events: none; }
+    #calico-design-package .package[data-panel="search-feedback"] .feedback-stage,
+    #calico-design-package .package[data-panel="data-safety"] .safety-stage,
+    #calico-design-package .package[data-panel="confirm-delete"] .modal-stage { width: 100%; min-height: 100%; display: grid; place-items: center; padding: 28px; background: transparent; pointer-events: none; }
     #calico-design-package .package[data-panel="new-item"] .sheet,
     #calico-design-package .package[data-panel="reserve"] .sheet,
     #calico-design-package .package[data-panel="day-hours"] .sheet,
     #calico-design-package .package[data-panel="day-allocation"] .sheet,
     #calico-design-package .package[data-panel="conflict"] .choice-sheet,
     #calico-design-package .package[data-panel="task-detail"] .detail-shell,
-    #calico-design-package .package[data-panel="search-feedback"] .feedback-shell { pointer-events: auto; }
+    #calico-design-package .package[data-panel="search-feedback"] .feedback-shell,
+    #calico-design-package .package[data-panel="data-safety"] .safety-sheet,
+    #calico-design-package .package[data-panel="confirm-delete"] .options-sheet { pointer-events: auto; }
     #calico-design-package .package[data-panel="reserve"] .sheet-foot { justify-content: flex-end; }
     #calico-design-package .package[data-panel="reserve"] .sheet-foot .text { display: none; }
     #calico-design-package .package[data-panel="new-item"] .sheet-foot { justify-content: flex-end; }
-    #calico-design-package .package[data-panel="new-item"].is-showing-event-options .sheet-foot { justify-content: space-between; }
+    #calico-design-package .package[data-panel="new-item"].is-showing-event-options .sheet-foot,
+    #calico-design-package .package[data-panel="new-item"].is-showing-task-options .sheet-foot { justify-content: space-between; }
     #calico-design-package .package[data-panel="task-detail"] .sheet-foot { justify-content: flex-end; }
     #calico-design-package .package[data-panel="task-detail"] .sheet-foot .text { display: none; }
+    #calico-design-package .package[data-panel="data-safety"] .sheet-foot,
+    #calico-design-package .package[data-panel="confirm-delete"] .sheet-foot { justify-content: flex-end; }
+    #calico-design-package .package[data-panel="data-safety"] .sheet-foot .text,
+    #calico-design-package .package[data-panel="confirm-delete"] .sheet-foot .text { display: none; }
     #calico-design-package .package[data-panel="task-options"].is-active,
     #calico-design-package .package[data-panel="event-options"].is-active { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; pointer-events: none; }
     #calico-design-package .package[data-panel="task-options"] .modal-stage,
@@ -300,12 +317,18 @@
     #calico-design-package .package[data-panel="task-options"] .options-sheet,
     #calico-design-package .package[data-panel="event-options"] .options-sheet { pointer-events: auto; }
     #calico-design-package .item-tabs[hidden],
-    #calico-design-package .in-place-event-options[hidden] { display: none !important; }
+    #calico-design-package .in-place-event-options[hidden],
+    #calico-design-package .in-place-task-options[hidden] { display: none !important; }
     #calico-design-package .in-place-event-options .form-row { width: 100%; border: 0; border-bottom: 1px solid #e5e5ea; padding: 0; background: transparent; color: #1d1d1f; font: inherit; text-align: left; }
     #calico-design-package .in-place-event-options button.form-row { cursor: pointer; }
     #calico-design-package .in-place-event-options button.form-row:hover { background: #f7f7f9; }
     #calico-design-package .in-place-event-options button.form-row:focus { outline: 0; }
     #calico-design-package .in-place-event-options .event-option-chevron { width: 14px; height: 14px; color: #8e8e93; }
+    #calico-design-package .package[data-panel="new-item"].is-showing-task-options .sheet { height: min(560px, calc(100vh - 32px)); max-height: calc(100vh - 32px); display: flex; flex-direction: column; }
+    #calico-design-package .package[data-panel="new-item"].is-showing-task-options .sheet-body { min-height: 0; overflow-y: auto; }
+    #calico-design-package .in-place-task-options .form-row:first-of-type { cursor: pointer; }
+    #calico-design-package .choice-sheet-head { position: relative; padding-right: 38px; }
+    #calico-design-package .choice-sheet-head .close { position: absolute; top: 0; right: 0; }
     #calico-design-package .package[data-panel="conflict"] .choice-sheet { width: min(510px, calc(100% - 32px)); height: min(560px, calc(100vh - 32px)); max-height: calc(100vh - 32px); display: flex; flex-direction: column; }
     #calico-design-package .package[data-panel="conflict"] .choice-body { min-height: 0; overflow-y: auto; padding: 18px; scrollbar-gutter: stable; }
     #calico-design-package .runtime-overlay { position: fixed; z-index: 30; inset: 0; display: grid; place-items: center; pointer-events: none; }

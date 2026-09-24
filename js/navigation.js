@@ -9,16 +9,17 @@ window.Calico.createNavigation = function createNavigation(root, fixture) {
 
   const packageButtons = all('[data-package]');
   const packages = all('[data-panel]');
-  const overlayPanels = new Set(['new-item', 'task-options', 'event-options', 'reserve', 'day-hours', 'day-allocation', 'conflict', 'task-detail', 'search-feedback']);
+  const overlayPanels = new Set(['new-item', 'task-options', 'event-options', 'reserve', 'day-hours', 'day-allocation', 'conflict', 'task-detail', 'search-feedback', 'data-safety', 'confirm-delete']);
   const period = root.querySelector('.package[data-panel="planner"] .period');
   let activeOverlay = null;
 
   const resetNewItem = () => {
     const panel = root.querySelector('[data-panel="new-item"]');
     if (!panel) return;
-    panel.classList.remove('is-showing-event-options');
+    panel.classList.remove('is-showing-event-options', 'is-showing-task-options');
     panel.querySelector('.item-tabs').hidden = false;
     panel.querySelector('.in-place-event-options')?.setAttribute('hidden', '');
+    panel.querySelector('.in-place-task-options')?.setAttribute('hidden', '');
     panel.querySelectorAll('[data-item-type]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.itemType === 'task')));
     panel.querySelector('[data-item="task"]').classList.add('is-active');
     panel.querySelector('[data-item="event"]').classList.remove('is-active');
@@ -63,6 +64,7 @@ window.Calico.createNavigation = function createNavigation(root, fixture) {
   packageButtons.forEach(button => button.addEventListener('click', () => {
     if (button.dataset.package === 'new-item') resetNewItem();
     openPanel(button.dataset.package);
+    if (button.dataset.package === 'confirm-delete') root.querySelector('[data-confirm-tab="reset"]')?.click();
     if (button.dataset.confirmTarget) root.querySelector(`[data-confirm-tab="${button.dataset.confirmTarget}"]`)?.click();
   }));
 

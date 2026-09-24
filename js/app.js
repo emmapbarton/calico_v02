@@ -103,7 +103,7 @@ function bindInPlaceEventOptions(root) {
 
   const options = newItem.querySelector('.in-place-event-options');
   const showEventForm = () => {
-    newItem.classList.remove('is-showing-event-options');
+    newItem.classList.remove('is-showing-event-options', 'is-showing-task-options');
     title.textContent = 'New event';
     tabs.hidden = false;
     taskForm.classList.remove('is-active');
@@ -113,6 +113,7 @@ function bindInPlaceEventOptions(root) {
     window.lucide?.createIcons();
   };
   const showOptions = () => {
+    newItem.classList.remove('is-showing-task-options');
     newItem.classList.add('is-showing-event-options');
     title.textContent = 'Event options';
     tabs.hidden = true;
@@ -125,6 +126,62 @@ function bindInPlaceEventOptions(root) {
 
   optionsButton.addEventListener('click', showOptions);
   options.querySelector('[data-open-event-repeat]').addEventListener('click', () => window.Calico.openRepeatOverlay(root, 'event'));
+}
+
+function bindInPlaceTaskOptions(root) {
+  const newItem = root.querySelector('[data-panel="new-item"]');
+  const optionsButton = newItem?.querySelector('[data-package="task-options"]');
+  const taskForm = newItem?.querySelector('[data-item="task"]');
+  const eventForm = newItem?.querySelector('[data-item="event"]');
+  const tabs = newItem?.querySelector('.item-tabs');
+  const title = newItem?.querySelector('#new-item-title');
+  const footer = newItem?.querySelector('.sheet-foot');
+  const source = root.querySelector('[data-panel="task-options"] .sheet-body');
+  if (!newItem || !optionsButton || !taskForm || !eventForm || !tabs || !title || !footer || !source) return;
+
+  optionsButton.removeAttribute('data-package');
+  optionsButton.dataset.taskOptionsInPlace = '';
+  const options = document.createElement('div');
+  options.className = 'in-place-task-options';
+  options.hidden = true;
+  options.innerHTML = source.innerHTML;
+  taskForm.insertAdjacentElement('afterend', options);
+
+  const showTaskForm = () => {
+    newItem.classList.remove('is-showing-event-options', 'is-showing-task-options');
+    title.textContent = 'New task';
+    tabs.hidden = false;
+    taskForm.classList.add('is-active');
+    eventForm.classList.remove('is-active');
+    options.hidden = true;
+    footer.innerHTML = '<button class="primary" id="new-item-save">Add task</button>';
+    window.lucide?.createIcons();
+  };
+  const showOptions = () => {
+    newItem.classList.remove('is-showing-event-options');
+    newItem.classList.add('is-showing-task-options');
+    title.textContent = 'Task options';
+    tabs.hidden = true;
+    taskForm.classList.remove('is-active');
+    eventForm.classList.remove('is-active');
+    options.hidden = false;
+    footer.innerHTML = '<button class="text" type="button" data-back-task-options>Back</button><button class="primary" type="button">Save options</button>';
+    footer.querySelector('[data-back-task-options]').addEventListener('click', showTaskForm);
+    window.lucide?.createIcons();
+  };
+
+  optionsButton.addEventListener('click', showOptions);
+  const repeat = options.querySelector('.form-row');
+  repeat.tabIndex = 0;
+  repeat.setAttribute('role', 'button');
+  repeat.setAttribute('aria-label', 'Edit task recurrence');
+  repeat.addEventListener('click', () => window.Calico.openRepeatOverlay(root, 'task'));
+  repeat.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      window.Calico.openRepeatOverlay(root, 'task');
+    }
+  });
 }
 
 function bindOccurrenceReview(root, navigation) {
@@ -170,6 +227,24 @@ function bindAccount(root) {
   });
 }
 
+function bindProjectPage(root) {
+  const page = root.querySelector('[data-page="projects"]');
+  if (!page) return;
+  const back = page.querySelector('[data-page-button="settings"]');
+  const headerAction = page.querySelector('.page-head > .secondary');
+  const projectHeads = page.querySelectorAll('.project-editor-head');
+  const newProjectHeading = projectHeads[projectHeads.length - 1]?.querySelector('h2');
+  if (!back || !newProjectHeading) return;
+
+  back.className = 'project-back';
+  back.setAttribute('aria-label', 'Back to Settings');
+  back.innerHTML = '<i data-lucide="arrow-left" aria-hidden="true"></i>';
+  back.parentElement.replaceWith(back);
+  headerAction?.remove();
+  newProjectHeading.outerHTML = '<button class="new-project-trigger" type="button"><i data-lucide="plus" aria-hidden="true"></i>New project</button>';
+  window.lucide?.createIcons();
+}
+
 function boot() {
   const { bindAgenda, bindOverlays, bindSearch, createNavigation, fixture } = window.Calico;
   const root = document.getElementById('calico-design-package');
@@ -181,8 +256,10 @@ function boot() {
   bindPriority(root);
   bindRecurrence(root);
   bindInPlaceEventOptions(root);
+  bindInPlaceTaskOptions(root);
   bindOccurrenceReview(root, navigation);
   bindAccount(root);
+  bindProjectPage(root);
   window.lucide?.createIcons();
 }
 
