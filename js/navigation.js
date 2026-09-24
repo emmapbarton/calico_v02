@@ -63,12 +63,11 @@ window.Calico.createNavigation = function createNavigation(root, fixture) {
   const itemButtons = all('[data-item-type]');
   const itemForms = all('[data-item]');
   const itemTitle = root.querySelector('#new-item-title');
-  const itemSave = root.querySelector('#new-item-save');
   itemButtons.forEach(button => button.addEventListener('click', () => {
     const type = button.dataset.itemType;
     show(itemButtons, itemForms, 'itemType', 'item', type);
     itemTitle.textContent = type === 'event' ? 'New event' : 'New task';
-    itemSave.textContent = type === 'event' ? 'Add event' : 'Add task';
+    root.querySelector('#new-item-save').textContent = type === 'event' ? 'Add event' : 'Add task';
   }));
 
   const confirmTabs = all('[data-confirm-tab]');

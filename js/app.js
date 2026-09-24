@@ -34,8 +34,8 @@ function bindCapacity(root) {
   if (!pageHead) return;
   pageHead.insertAdjacentHTML('afterend', `
     <section class="day-capacity" aria-label="Today's capacity">
-      <span class="day-capacity-label">Today's capacity <i data-lucide="sparkles"></i></span>
-      <span class="day-capacity-value"><strong data-day-capacity-value>7</strong>Balanced day</span>
+      <span class="day-capacity-label">Today's capacity</span>
+      <span class="day-capacity-value"><strong data-day-capacity-value>7</strong></span>
       <span class="capacity-stepper"><button type="button" data-day-capacity-adjust="-1" aria-label="Reduce capacity"><i data-lucide="minus"></i></button><button type="button" data-day-capacity-adjust="1" aria-label="Increase capacity"><i data-lucide="plus"></i></button></span>
       <span class="capacity-levels"><button type="button" data-day-capacity-level="5" aria-pressed="false">Gentle</button><button type="button" data-day-capacity-level="7" aria-pressed="true">Balanced</button><button type="button" data-day-capacity-level="9" aria-pressed="false">Full</button></span>
     </section>`);
@@ -65,13 +65,12 @@ function bindPriority(root) {
 
 function bindRecurrence(root) {
   const taskRepeat = root.querySelector('[data-panel="task-options"] .form-row');
-  const eventRepeat = root.querySelector('[data-panel="event-options"] .form-row');
-  [[taskRepeat, 'task'], [eventRepeat, 'event']].forEach(([row, type]) => {
+  [taskRepeat].forEach(row => {
     if (!row) return;
     row.tabIndex = 0;
     row.setAttribute('role', 'button');
-    row.setAttribute('aria-label', `Edit ${type} recurrence`);
-    const open = () => window.Calico.openRepeatOverlay(root, type);
+    row.setAttribute('aria-label', 'Edit task recurrence');
+    const open = () => window.Calico.openRepeatOverlay(root, 'task');
     row.addEventListener('click', open);
     row.addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' ') {
@@ -80,6 +79,50 @@ function bindRecurrence(root) {
       }
     });
   });
+}
+
+function bindInPlaceEventOptions(root) {
+  const newItem = root.querySelector('[data-panel="new-item"]');
+  const optionsButton = newItem?.querySelector('[data-package="event-options"]');
+  const eventForm = newItem?.querySelector('[data-item="event"]');
+  const taskForm = newItem?.querySelector('[data-item="task"]');
+  const tabs = newItem?.querySelector('.item-tabs');
+  const title = newItem?.querySelector('#new-item-title');
+  const footer = newItem?.querySelector('.sheet-foot');
+  if (!newItem || !optionsButton || !eventForm || !taskForm || !tabs || !title || !footer) return;
+
+  optionsButton.removeAttribute('data-package');
+  optionsButton.dataset.eventOptionsInPlace = '';
+  eventForm.insertAdjacentHTML('afterend', `
+    <div class="in-place-event-options" hidden>
+      <div class="options-section-title">Repeat</div>
+      <button class="form-row" type="button" data-open-event-repeat><i data-lucide="repeat-2"></i><label>Frequency</label><span>Does not repeat</span></button>
+      <div class="form-row"><i data-lucide="calendar-range"></i><label>Ends</label><span>Not applicable</span></div>
+      <div class="form-row"><i data-lucide="clock-3"></i><label>Time</label><span>14:00-16:00</span></div>
+    </div>`);
+
+  const options = newItem.querySelector('.in-place-event-options');
+  const showEventForm = () => {
+    title.textContent = 'New event';
+    tabs.hidden = false;
+    taskForm.classList.remove('is-active');
+    eventForm.classList.add('is-active');
+    options.hidden = true;
+    footer.innerHTML = '<button class="primary" id="new-item-save">Add event</button>';
+    window.lucide?.createIcons();
+  };
+  const showOptions = () => {
+    title.textContent = 'Event options';
+    tabs.hidden = true;
+    eventForm.classList.remove('is-active');
+    options.hidden = false;
+    footer.innerHTML = '<button class="text" type="button" data-back-event-options>Back</button><button class="primary" type="button">Save event</button>';
+    footer.querySelector('[data-back-event-options]').addEventListener('click', showEventForm);
+    window.lucide?.createIcons();
+  };
+
+  optionsButton.addEventListener('click', showOptions);
+  options.querySelector('[data-open-event-repeat]').addEventListener('click', () => window.Calico.openRepeatOverlay(root, 'event'));
 }
 
 function bindOccurrenceReview(root, navigation) {
@@ -135,6 +178,7 @@ function boot() {
   bindCapacity(root);
   bindPriority(root);
   bindRecurrence(root);
+  bindInPlaceEventOptions(root);
   bindOccurrenceReview(root, navigation);
   bindAccount(root);
   window.lucide?.createIcons();

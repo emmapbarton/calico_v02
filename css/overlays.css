@@ -298,6 +298,8 @@
     #calico-design-package .package[data-panel="event-options"] .modal-stage { width: 100%; min-height: 100%; display: grid; place-items: center; padding: 28px; background: transparent; pointer-events: none; }
     #calico-design-package .package[data-panel="task-options"] .options-sheet,
     #calico-design-package .package[data-panel="event-options"] .options-sheet { pointer-events: auto; }
+    #calico-design-package .item-tabs[hidden],
+    #calico-design-package .in-place-event-options[hidden] { display: none !important; }
     #calico-design-package .runtime-overlay { position: fixed; z-index: 30; inset: 0; display: grid; place-items: center; pointer-events: none; }
     #calico-design-package .runtime-sheet { width: min(540px, calc(100% - 32px)); overflow: hidden; border: 1px solid #d1d1d6; border-radius: 12px; background: #fff; box-shadow: 0 22px 56px rgba(28,28,36,.18); pointer-events: auto; }
     #calico-design-package .runtime-sheet .sheet-head { min-height: 60px; padding: 9px 18px; }

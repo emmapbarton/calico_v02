@@ -47,6 +47,7 @@
     #calico-design-package .capacity-chip[data-capacity="7"] .capacity-dot { background: #007aff; }
     #calico-design-package .capacity-chip[data-capacity="8"] .capacity-dot { background: #e67817; }
     #calico-design-package .capacity-chip.is-expanded { width: 126px; display: flex; justify-content: space-between; margin: 7px auto 0; padding: 3px 6px; box-shadow: 0 4px 12px rgba(0,122,255,.14); }
+    #calico-design-package .day-label.today .capacity-chip { margin-top: 3px; }
     #calico-design-package .capacity-chip.is-expanded .capacity-value { display: inline-flex; align-items: center; gap: 4px; }
     #calico-design-package .capacity-chip .capacity-adjust { width: 19px; height: 19px; display: none; place-items: center; border: 0; border-radius: 50%; padding: 0; background: #fff; color: #0066d6; line-height: 0; }
     #calico-design-package .capacity-chip.is-expanded .capacity-adjust { display: grid; }
