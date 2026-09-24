@@ -208,7 +208,7 @@
     #calico-design-package .project-row .project-copy { flex: 1; }
     #calico-design-package .project-action { min-height: 28px; border: 0; border-radius: 6px; padding: 4px 8px; background: #f2f2f7; color: #515157; font-size: 11px; }
     #calico-design-package .project-action i { width: 13px; height: 13px; display: block; }
-    #calico-design-package .project-new { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 10px; padding: 13px 0; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .project-new { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 10px; padding: 13px 0; }
     #calico-design-package .project-new input { min-width: 0; border: 0; outline: 0; color: #1d1d1f; font-size: 13px; }
     #calico-design-package .colour-picker { display: flex; align-items: center; gap: 7px; }
     #calico-design-package .colour-picker button, #calico-design-package .colour-samples button { width: 18px; height: 18px; border: 2px solid #fff; border-radius: 50%; padding: 0; box-shadow: 0 0 0 1px #c7c7cc; }
