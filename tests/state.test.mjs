@@ -4,9 +4,12 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 const code = fs.readFileSync(new URL('../js/state.js', import.meta.url), 'utf8');
+const plannerCode = fs.readFileSync(new URL('../js/planner.js', import.meta.url), 'utf8');
 const context = vm.createContext({ window: { Calico: {} }, console, Date, JSON, Math, Number, String, Array, Object, Set, RegExp, globalThis: {} });
 vm.runInContext(code, context);
+vm.runInContext(plannerCode, context);
 const { state: domain } = context.window.Calico;
+const { planner } = context.window.Calico;
 
 function memoryStorage(initial = {}) {
   const values = new Map(Object.entries(initial));
@@ -140,4 +143,58 @@ test('a local persistence failure keeps the in-memory change available', () => {
   assert.equal(result.ok, true);
   assert.equal(store.getState().projects[0].name, 'Studio');
   assert.match(store.getLastPersistError(), /could not save locally/i);
+});
+
+function plannerTask(id, hours, deadline, extra = {}) {
+  return { id, type: 'task', name: id, deadline, date: deadline, hours, logged: 0, priority: 'mandatory', dist: 'even', repeat: 'none', color: '#007aff', ...extra };
+}
+
+test('the canonical planner subtracts events from intensity-adjusted capacity', () => {
+  const state = domain.normalizeState({
+    baseline: 7,
+    maxDailyHours: 8,
+    dayStart: '09:00',
+    dayEnd: '17:00',
+    intensities: { '2026-09-21': 3.5 },
+    tasks: [plannerTask('brief', 4, '2026-09-21')],
+    events: [{ id: 'review', type: 'event', name: 'Review', date: '2026-09-21', start: '09:00', end: '10:00', repeat: 'none' }],
+  });
+  const plan = planner.allocateSchedule(state, { today: '2026-09-21T12:00:00' });
+  assert.equal(plan.dailyCapacity['2026-09-21'], 4);
+  assert.equal(plan.dailyFree['2026-09-21'], 3);
+  assert.equal(plan.allocations.brief['2026-09-21'], 3);
+  assert.equal(plan.conflicts.brief.shortfall, 1);
+});
+
+test('manual occurrence exclusions remain authoritative and surface a shortfall', () => {
+  const state = domain.normalizeState({
+    tasks: [plannerTask('brief', 2, '2026-09-21')],
+    manualOverrides: { brief: { pinned: {}, excludedDates: ['2026-09-21'] } },
+  });
+  const plan = planner.allocateSchedule(state, { today: '2026-09-21T12:00:00' });
+  assert.equal(plan.allocations.brief['2026-09-21'], undefined);
+  assert.equal(plan.conflicts.brief.shortfall, 2);
+  assert.equal(plan.conflicts.brief.reason, 'user_constraints');
+});
+
+test('repeating tasks retain occurrence-local overrides without changing the next occurrence', () => {
+  const state = domain.normalizeState({
+    tasks: [plannerTask('weekly', 2, '2026-09-21', { repeat: 'weekly', repeatEndType: 'count', repeatCount: 2 })],
+    manualOverrides: { 'weekly|occ|2026-09-21': { pinned: {}, excludedDates: ['2026-09-21'] } },
+  });
+  const plan = planner.allocateSchedule(state, { today: '2026-09-21T12:00:00' });
+  assert.equal(plan.occurrenceResults['weekly|occ|2026-09-21'].shortfall, 2);
+  assert.equal(plan.occurrenceResults['weekly|occ|2026-09-28'].fullyAllocated, true);
+});
+
+test('timed instructions and task-scoped overwork remain part of the canonical allocation', () => {
+  const state = domain.normalizeState({
+    maxDailyHours: 1,
+    tasks: [plannerTask('brief', 2, '2026-09-21')],
+    taskOverworkAllowances: { 'brief|2026-09-21|2026-09-21': 1 },
+    manualOverrides: { brief: { pinned: {}, excludedDates: [], timeBlocks: { '2026-09-21': { start: '09:00', end: '10:00', mode: 'fixed' } } } },
+  });
+  const plan = planner.allocateSchedule(state, { today: '2026-09-21T12:00:00' });
+  assert.equal(plan.allocations.brief['2026-09-21'], 2);
+  assert.equal(plan.occurrenceResults.brief.fullyAllocated, true);
 });
