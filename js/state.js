@@ -341,6 +341,42 @@ window.Calico = window.Calico || {};
       getLastPersistError: () => lastPersistError,
       subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
       replace: commit,
+      updatePlanning(input) {
+        const next = { ...state, ...input };
+        if (input?.distribution !== undefined && (!DISTRIBUTIONS.has(input.distribution) || input.distribution === 'inherit')) {
+          return { ok: false, error: 'Choose a valid default distribution.' };
+        }
+        if (input?.baseline !== undefined && (!Number.isFinite(Number(input.baseline)) || Number(input.baseline) < 1 || Number(input.baseline) > 10)) {
+          return { ok: false, error: 'Baseline intensity must be between 1 and 10.' };
+        }
+        const hours = workingHoursSettings(next.dayStart, next.dayEnd, next.maxDailyHours, next.minBlockHours);
+        if (!hours) return { ok: false, error: 'Working hours must end after they start.' };
+        commit({ ...next, ...hours, baseline: Number(next.baseline), distribution: next.distribution });
+        return { ok: true, value: clone(state) };
+      },
+      setDailyWorkingHours(date, input) {
+        if (!isIsoDate(date) || !Number.isFinite(dayTimestamp(date))) return { ok: false, error: 'Choose a valid date.' };
+        const hours = workingHoursSettings(input?.dayStart, input?.dayEnd, input?.maxDailyHours, state.minBlockHours);
+        if (!hours) return { ok: false, error: 'Working hours must end after they start.' };
+        commit({ ...state, dailyWorkingHours: { ...state.dailyWorkingHours, [date]: { dayStart: hours.dayStart, dayEnd: hours.dayEnd, maxDailyHours: hours.maxDailyHours } } });
+        return { ok: true, value: clone(state.dailyWorkingHours[date]) };
+      },
+      clearDailyWorkingHours(date) {
+        if (!state.dailyWorkingHours[date]) return { ok: false, error: 'No individual working hours are set for this date.' };
+        const dailyWorkingHours = { ...state.dailyWorkingHours };
+        delete dailyWorkingHours[date];
+        commit({ ...state, dailyWorkingHours });
+        return { ok: true };
+      },
+      setIntensity(date, value, options = {}) {
+        if (!isIsoDate(date) || !Number.isFinite(dayTimestamp(date))) return { ok: false, error: 'Choose a valid date.' };
+        const intensity = Number(value);
+        if (!Number.isFinite(intensity) || intensity < 1 || intensity > 10) return { ok: false, error: 'Day capacity must be between 1 and 10.' };
+        const today = options.today ? String(options.today).slice(0, 10) : new Date().toISOString().slice(0, 10);
+        if (date < today) return { ok: false, error: 'Past day capacity cannot be changed.' };
+        commit({ ...state, intensities: { ...state.intensities, [date]: intensity } });
+        return { ok: true, value: intensity };
+      },
       createProject(input) {
         const result = validateProject(input, state);
         if (!result.ok) return result;

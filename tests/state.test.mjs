@@ -145,6 +145,28 @@ test('a local persistence failure keeps the in-memory change available', () => {
   assert.match(store.getLastPersistError(), /could not save locally/i);
 });
 
+test('planning settings validate atomically and persist global defaults', () => {
+  const store = domain.createStore({ storage: memoryStorage() });
+  assert.equal(store.updatePlanning({ dayStart: '17:00', dayEnd: '09:00' }).ok, false);
+  assert.equal(store.getState().dayStart, '09:00');
+  const result = store.updatePlanning({ baseline: 8, distribution: 'front', dayStart: '08:30', dayEnd: '16:30', maxDailyHours: 6, minBlockHours: 1 });
+  assert.equal(result.ok, true);
+  assert.equal(store.getState().baseline, 8);
+  assert.equal(store.getState().distribution, 'front');
+  assert.equal(store.getState().maxDailyHours, 6);
+});
+
+test('per-day working hours and capacity apply to the canonical planner', () => {
+  const store = domain.createStore({ storage: memoryStorage() });
+  assert.equal(store.setDailyWorkingHours('2026-09-21', { dayStart: '10:00', dayEnd: '13:00', maxDailyHours: 3 }).ok, true);
+  assert.equal(store.setIntensity('2026-09-21', 5, { today: '2026-09-21' }).ok, true);
+  assert.equal(store.setIntensity('2026-09-20', 5, { today: '2026-09-21' }).ok, false);
+  store.createTask(plannerTask('brief', 4, '2026-09-21'));
+  const plan = planner.allocateSchedule(store.getState(), { today: '2026-09-21T12:00:00' });
+  assert.equal(plan.dailyCapacity['2026-09-21'], 2.14);
+  assert.equal(store.clearDailyWorkingHours('2026-09-21').ok, true);
+});
+
 function plannerTask(id, hours, deadline, extra = {}) {
   return { id, type: 'task', name: id, deadline, date: deadline, hours, logged: 0, priority: 'mandatory', dist: 'even', repeat: 'none', color: '#007aff', ...extra };
 }
