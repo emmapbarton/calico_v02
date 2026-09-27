@@ -147,5 +147,64 @@ window.Calico = window.Calico || {};
     return { allocations, occurrenceAllocations, occurrenceResults, occurrences, conflicts, conflictsByTask: conflicts, conflictSummary, affectedTasks, dailyCapacity, dailyFree, dailyUsed, dailyEvents, window: { from: days[0], to: days.at(-1) } };
   }
 
-  window.Calico.planner = { allocateSchedule, roundHours: round };
+  const overlaps = (startA, endA, startB, endB) => startA < endB - EPSILON && endA > startB + EPSILON;
+  const firstFreeSlot = (duration, occupied, bounds) => {
+    const intervals = occupied.filter(interval => interval.end > bounds.start && interval.start < bounds.end)
+      .map(interval => ({ start: Math.max(bounds.start, interval.start), end: Math.min(bounds.end, interval.end) }))
+      .sort((a, b) => a.start - b.start || a.end - b.end);
+    let cursor = bounds.start;
+    for (const interval of intervals) {
+      if (interval.start - cursor >= duration - EPSILON) return { start: cursor, end: round(cursor + duration) };
+      cursor = Math.max(cursor, interval.end);
+    }
+    return bounds.end - cursor >= duration - EPSILON ? { start: cursor, end: round(cursor + duration) } : null;
+  };
+
+  function buildDayTimeline(state, plan, target) {
+    const working = workingHours(state, target);
+    const bounds = { start: time(working.dayStart), end: time(working.dayEnd) };
+    const events = (plan.dailyEvents?.[target] || []).map(item => ({ kind: 'event', item, start: time(item.start), end: time(item.end) }));
+    const occupied = events.map(entry => ({ start: entry.start, end: entry.end }));
+    const tasks = (plan.occurrences || []).flatMap(occurrence => {
+      const hours = round(plan.occurrenceAllocations?.[occurrence.occId]?.[target] || 0);
+      const item = state.tasks.find(task => task.id === occurrence.taskId);
+      return hours > EPSILON && item ? [{ occurrence, item, hours }] : [];
+    }).sort((a, b) => priorityRank(a.occurrence) - priorityRank(b.occurrence) || a.item.name.localeCompare(b.item.name));
+    const taskBlocks = []; const flexible = [];
+    tasks.forEach(entry => {
+      const block = occurrenceOverride(state, entry.occurrence).timeBlocks?.[target];
+      const duration = round(time(block?.end) - time(block?.start));
+      const valid = block && Number.isFinite(duration) && duration > EPSILON && time(block.start) >= bounds.start - EPSILON && time(block.end) <= bounds.end + EPSILON && duration <= entry.hours + EPSILON;
+      if (valid && block.mode === 'fixed') {
+        taskBlocks.push({ kind: 'task', item: entry.item, occ: entry.occurrence, hours: duration, start: time(block.start), end: time(block.end), mode: 'fixed', exact: true });
+        occupied.push({ start: time(block.start), end: time(block.end) });
+        if (entry.hours - duration > EPSILON) flexible.push({ ...entry, hours: round(entry.hours - duration) });
+      } else flexible.push(entry);
+    });
+    const remaining = [];
+    flexible.forEach(entry => {
+      const block = occurrenceOverride(state, entry.occurrence).timeBlocks?.[target];
+      const duration = round(time(block?.end) - time(block?.start));
+      const desired = block?.mode === 'preferred' && Number.isFinite(duration) && duration > EPSILON && duration <= entry.hours + EPSILON
+        && time(block.start) >= bounds.start - EPSILON && time(block.end) <= bounds.end + EPSILON ? { start: time(block.start), end: time(block.end) } : null;
+      if (desired && !occupied.some(interval => overlaps(desired.start, desired.end, interval.start, interval.end))) {
+        taskBlocks.push({ kind: 'task', item: entry.item, occ: entry.occurrence, hours: duration, start: desired.start, end: desired.end, mode: 'preferred', exact: true });
+        occupied.push(desired);
+        if (entry.hours - duration > EPSILON) remaining.push({ ...entry, hours: round(entry.hours - duration) });
+      } else remaining.push(entry);
+    });
+    remaining.forEach(entry => {
+      let outstanding = entry.hours;
+      while (outstanding > EPSILON) {
+        const slot = firstFreeSlot(outstanding, occupied, bounds) || firstFreeSlot(Math.min(outstanding, Math.max(.25, state.minBlockHours || .5)), occupied, bounds);
+        if (!slot) break;
+        const hours = round(slot.end - slot.start);
+        taskBlocks.push({ kind: 'task', item: entry.item, occ: entry.occurrence, hours, start: slot.start, end: slot.end, mode: 'flexible', exact: false });
+        occupied.push(slot); outstanding = round(outstanding - hours);
+      }
+    });
+    return { working, events: events.sort((a, b) => a.start - b.start), taskBlocks: taskBlocks.sort((a, b) => a.start - b.start || a.end - b.end) };
+  }
+
+  window.Calico.planner = { allocateSchedule, buildDayTimeline, roundHours: round };
 })();

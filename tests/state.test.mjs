@@ -198,3 +198,23 @@ test('timed instructions and task-scoped overwork remain part of the canonical a
   assert.equal(plan.allocations.brief['2026-09-21'], 2);
   assert.equal(plan.occurrenceResults.brief.fullyAllocated, true);
 });
+
+test('the daily timeline honours fixed blocks and falls back from an occupied preferred time', () => {
+  const state = domain.normalizeState({
+    maxDailyHours: 5,
+    tasks: [plannerTask('fixed', 1, '2026-09-21'), plannerTask('preferred', 1, '2026-09-21')],
+    events: [{ id: 'event', type: 'event', name: 'Event', date: '2026-09-21', start: '11:00', end: '12:00', repeat: 'none' }],
+    manualOverrides: {
+      fixed: { pinned: {}, excludedDates: [], timeBlocks: { '2026-09-21': { start: '09:00', end: '10:00', mode: 'fixed' } } },
+      preferred: { pinned: {}, excludedDates: [], timeBlocks: { '2026-09-21': { start: '11:00', end: '12:00', mode: 'preferred' } } },
+    },
+  });
+  const plan = planner.allocateSchedule(state, { today: '2026-09-21T12:00:00' });
+  const timeline = planner.buildDayTimeline(state, plan, '2026-09-21');
+  const fixed = timeline.taskBlocks.find(block => block.item.id === 'fixed');
+  const preferred = timeline.taskBlocks.find(block => block.item.id === 'preferred');
+  assert.equal(fixed.mode, 'fixed');
+  assert.equal(fixed.start, 9);
+  assert.equal(preferred.mode, 'flexible');
+  assert.notEqual(preferred.start, 11);
+});
