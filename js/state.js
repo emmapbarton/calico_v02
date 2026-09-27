@@ -78,6 +78,14 @@ window.Calico = window.Calico || {};
     };
   };
   const createId = () => globalThis.crypto?.randomUUID?.() || `calico-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const isCalicoStateDocument = candidate => !!(candidate && typeof candidate === 'object' && !Array.isArray(candidate)
+    && Array.isArray(candidate.tasks) && Array.isArray(candidate.events));
+  const stateForBackup = state => {
+    const backup = clone(state);
+    delete backup.account;
+    delete backup.cloud;
+    return backup;
+  };
 
   function normalizeState(input) {
     const raw = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
@@ -377,6 +385,26 @@ window.Calico = window.Calico || {};
         commit({ ...state, intensities: { ...state.intensities, [date]: intensity } });
         return { ok: true, value: intensity };
       },
+      createBackup(now = new Date()) {
+        return JSON.stringify({ exportedAt: now.toISOString(), state: stateForBackup(state) }, null, 2);
+      },
+      restoreBackup(input) {
+        let parsed;
+        try { parsed = typeof input === 'string' ? JSON.parse(input) : input; } catch (_) { return { ok: false, error: 'This is not a valid Calico backup.' }; }
+        const candidate = parsed?.state || parsed;
+        if (!isCalicoStateDocument(candidate)) return { ok: false, error: 'This is not a Calico backup.' };
+        const restored = normalizeState(candidate);
+        commit({ ...restored, account: clone(state.account) });
+        return { ok: true, value: clone(state) };
+      },
+      resetPlanningData() {
+        commit({
+          ...state,
+          tasks: [], events: [], projects: [], hiddenProjectIds: [], intensities: {}, intensityHistory: [],
+          dailyWorkingHours: {}, taskLog: {}, manualOverrides: {}, taskOverworkAllowances: {},
+        });
+        return { ok: true, value: clone(state) };
+      },
       createProject(input) {
         const result = validateProject(input, state);
         if (!result.ok) return result;
@@ -448,5 +476,5 @@ window.Calico = window.Calico || {};
     };
   }
 
-  window.Calico.state = { DEFAULT_STATE, STORAGE_KEY, normalizeState, validateProject, validateTask, validateEvent, createStore, eventTimeRangeIsValid, eventOccursOn, eventsOnDate, workingHoursSettings };
+  window.Calico.state = { DEFAULT_STATE, STORAGE_KEY, isCalicoStateDocument, stateForBackup, normalizeState, validateProject, validateTask, validateEvent, createStore, eventTimeRangeIsValid, eventOccursOn, eventsOnDate, workingHoursSettings };
 })();

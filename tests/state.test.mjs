@@ -167,6 +167,33 @@ test('per-day working hours and capacity apply to the canonical planner', () => 
   assert.equal(store.clearDailyWorkingHours('2026-09-21').ok, true);
 });
 
+test('backups omit account metadata and restore planning data without replacing the local account', () => {
+  const store = domain.createStore({ storage: memoryStorage() });
+  store.replace({ ...store.getState(), account: { revision: 4, lastSyncAt: '2026-09-20T10:00:00Z', lastError: '', email: 'local@calico.app' } });
+  store.createTask(plannerTask('brief', 2, '2026-09-21'));
+  const backup = JSON.parse(store.createBackup(new Date('2026-09-21T10:00:00Z')));
+  assert.equal(backup.exportedAt, '2026-09-21T10:00:00.000Z');
+  assert.equal(backup.state.account, undefined);
+  assert.equal(store.restoreBackup({ state: { tasks: [plannerTask('restored', 1, '2026-09-22')], events: [], account: { email: 'remote@calico.app' } } }).ok, true);
+  assert.equal(store.getState().tasks[0].id, 'restored');
+  assert.equal(store.getState().account.email, 'local@calico.app');
+  assert.equal(store.restoreBackup('{broken').ok, false);
+});
+
+test('reset removes planning data but retains global defaults and account metadata', () => {
+  const store = domain.createStore({ storage: memoryStorage() });
+  store.replace({ ...store.getState(), baseline: 8, account: { revision: 1, lastSyncAt: null, lastError: '', email: 'local@calico.app' }, projects: [{ id: 'studio', name: 'Studio', color: '#e67817' }], tasks: [plannerTask('brief', 2, '2026-09-21', { projectId: 'studio' })], events: [{ id: 'review', date: '2026-09-21', start: '09:00', end: '10:00' }], dailyWorkingHours: { '2026-09-21': { dayStart: '10:00', dayEnd: '15:00', maxDailyHours: 4 } }, intensities: { '2026-09-21': 5 }, taskLog: { 'brief|2026-09-21': { checked: true } }, manualOverrides: { brief: { pinned: { '2026-09-21': 2 } } } });
+  assert.equal(store.resetPlanningData().ok, true);
+  const state = store.getState();
+  assert.equal(state.baseline, 8);
+  assert.equal(state.account.email, 'local@calico.app');
+  assert.equal(state.tasks.length, 0);
+  assert.equal(state.events.length, 0);
+  assert.equal(state.projects.length, 0);
+  assert.deepEqual({ ...state.dailyWorkingHours }, {});
+  assert.deepEqual({ ...state.intensities }, {});
+});
+
 function plannerTask(id, hours, deadline, extra = {}) {
   return { id, type: 'task', name: id, deadline, date: deadline, hours, logged: 0, priority: 'mandatory', dist: 'even', repeat: 'none', color: '#007aff', ...extra };
 }
