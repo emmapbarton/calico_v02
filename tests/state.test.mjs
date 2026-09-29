@@ -226,6 +226,15 @@ test('manual occurrence exclusions remain authoritative and surface a shortfall'
   assert.equal(plan.conflicts.brief.reason, 'user_constraints');
 });
 
+test('a visible day-hour adjustment persists as an occurrence-local pin', () => {
+  const store = domain.createStore({ storage: memoryStorage() });
+  const task = store.createTask({ name: 'Occurrence pin', deadline: '2026-09-30', hours: 3, minBlockHours: .5 }).value;
+  const result = store.setOccurrencePinned(task.id, '2026-09-29', 1.5);
+  assert.equal(result.ok, true);
+  assert.deepEqual(store.getState().manualOverrides[task.id].pinned, { '2026-09-29': 1.5 });
+  assert.deepEqual(store.getState().manualOverrides[task.id].excludedDates, ['2026-09-29']);
+});
+
 test('repeating tasks retain occurrence-local overrides without changing the next occurrence', () => {
   const state = domain.normalizeState({
     tasks: [plannerTask('weekly', 2, '2026-09-21', { repeat: 'weekly', repeatEndType: 'count', repeatCount: 2 })],

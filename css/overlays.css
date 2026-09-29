@@ -13,6 +13,17 @@
     #calico-design-package .form-row label { flex: 1; font-size: 13px; }
     #calico-design-package .form-row span { color: #6e6e73; font-size: 13px; }
     #calico-design-package .form-row i { width: 16px; height: 16px; color: #8e8e93; }
+    #calico-design-package .form-row select,
+    #calico-design-package .form-row input { max-width: 210px; border: 0; background: transparent; color: #007aff; font: inherit; text-align: right; outline: 0; }
+    #calico-design-package .form-row select { min-width: 120px; }
+    #calico-design-package .form-row > span:first-of-type { flex: 1; }
+    #calico-design-package .form-row input[type="checkbox"] { width: 17px; height: 17px; accent-color: #007aff; }
+    #calico-design-package .inline-times { display: inline-flex; align-items: center; gap: 4px; color: #8e8e93; }
+    #calico-design-package .inline-times input { width: 76px; min-width: 0; }
+    #calico-design-package .day-hours-grid input { width: 100%; margin-top: 6px; border: 0; background: transparent; color: #007aff; font: inherit; font-weight: 600; outline: 0; }
+    #calico-design-package .runtime-label { display: block; margin: 12px 0 6px; color: #6e6e73; font-size: 11px; font-weight: 650; }
+    #calico-design-package .runtime-input { width: 100%; min-height: 38px; display: block; margin-top: 6px; border: 1px solid #d2d2d7; border-radius: 7px; padding: 7px 9px; color: #1d1d1f; font: inherit; font-size: 13px; outline: 0; }
+    #calico-design-package .project-runtime .colour-picker { margin: 9px 0 2px; }
     #calico-design-package .place-row { min-height: 48px; display: flex; align-items: center; gap: 8px; color: #007aff; font-size: 13px; }
     #calico-design-package .place-row strong { flex: 1; }
     #calico-design-package .place-row span { color: #8e8e93; font-size: 12px; }
@@ -153,6 +164,7 @@
     #calico-design-package .search-field input { width: 100%; border: 0; outline: 0; font-size: 13px; }
     #calico-design-package .search-results { margin-top: 10px; border-top: 1px solid #e5e5ea; }
     #calico-design-package .search-result { min-height: 53px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #e5e5ea; color: #1d1d1f; }
+    #calico-design-package button.search-result { width: 100%; border-right: 0; border-left: 0; border-top: 0; background: #fff; text-align: left; }
     #calico-design-package .search-result i { width: 16px; height: 16px; color: #8e8e93; }
     #calico-design-package .search-result span { flex: 1; }
     #calico-design-package .search-result strong { display: block; font-size: 13px; }

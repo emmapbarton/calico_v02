@@ -385,6 +385,28 @@ window.Calico = window.Calico || {};
         commit({ ...state, intensities: { ...state.intensities, [date]: intensity } });
         return { ok: true, value: intensity };
       },
+      setOccurrencePinned(occurrenceId, date, hours) {
+        if (!String(occurrenceId || '')) return { ok: false, error: 'Choose a scheduled task occurrence.' };
+        if (!isIsoDate(date) || !Number.isFinite(dayTimestamp(date))) return { ok: false, error: 'Choose a valid date.' };
+        const amount = Number(hours);
+        if (!Number.isFinite(amount) || amount < 0 || amount > 24) return { ok: false, error: 'Hours must be between 0 and 24.' };
+        const manualOverrides = clone(state.manualOverrides);
+        const override = manualOverrides[occurrenceId] ||= { pinned: {}, excludedDates: [] };
+        override.pinned ||= {};
+        override.pinned[date] = amount;
+        override.excludedDates = [...new Set([...(override.excludedDates || []), date])];
+        commit({ ...state, manualOverrides });
+        return { ok: true, value: amount };
+      },
+      clearOccurrencePinned(occurrenceId, date) {
+        const override = state.manualOverrides?.[occurrenceId];
+        if (!override?.pinned?.[date]) return { ok: false, error: 'This occurrence has no manual hours on that date.' };
+        const manualOverrides = clone(state.manualOverrides);
+        delete manualOverrides[occurrenceId].pinned[date];
+        manualOverrides[occurrenceId].excludedDates = (manualOverrides[occurrenceId].excludedDates || []).filter(item => item !== date);
+        commit({ ...state, manualOverrides });
+        return { ok: true };
+      },
       createBackup(now = new Date()) {
         return JSON.stringify({ exportedAt: now.toISOString(), state: stateForBackup(state) }, null, 2);
       },

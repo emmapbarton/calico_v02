@@ -25,6 +25,7 @@ window.Calico.createNavigation = function createNavigation(root, fixture) {
     panel.querySelector('[data-item="event"]').classList.remove('is-active');
     panel.querySelector('#new-item-title').textContent = 'New task';
     panel.querySelector('.sheet-foot').innerHTML = '<button class="primary" id="new-item-save">Add task</button>';
+    root.dispatchEvent(new CustomEvent('calico:new-item-reset'));
   };
 
   const updatePeriod = page => {

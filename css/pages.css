@@ -1,6 +1,7 @@
     #calico-design-package .settings { max-width: 720px; border-top: 1px solid #e5e5ea; }
     #calico-design-package .settings-section { padding: 17px 0 5px; color: #6e6e73; font-size: 11px; font-weight: 600; text-transform: uppercase; }
     #calico-design-package .setting { min-height: 54px; display: flex; align-items: center; gap: 11px; padding: 9px 2px; border-bottom: 1px solid #e5e5ea; }
+    #calico-design-package .setting[data-planning-setting] { cursor: pointer; }
     #calico-design-package .setting-copy { flex: 1; }
     #calico-design-package .setting-copy strong { display: block; font-size: 14px; font-weight: 550; }
     #calico-design-package .setting-copy p { margin: 2px 0 0; color: #6e6e73; font-size: 12px; }
